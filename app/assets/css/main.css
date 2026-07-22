@@ -1,11 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
-
 @import 'tailwindcss';
 
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
     --font-sans: 'Inter';
+    --text-6xl: 4rem;
 
     --color-orange-50: oklch(18.4% 0.038 85.8);
     --color-orange-100: oklch(26.6% 0.055 80.9);

@@ -3,13 +3,25 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
+  modules: ['@nuxtjs/google-fonts'],
   css: ['./assets/css/main.css'],
+
   vite: {
     plugins: [tailwindcss()],
   },
+
   app: {
     head: {
       title: 'Автоцентр на Лазурной',
+    },
+  },
+  googleFonts: {
+    display: 'swap',
+    families: {
+      'Inter': {
+        wght: '100..900',
+        ital: '100..900'
+      }
     },
   },
 })
