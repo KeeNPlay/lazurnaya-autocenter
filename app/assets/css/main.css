@@ -1,0 +1,56 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+    --font-sans: 'Inter';
+
+    --color-orange-50: oklch(18.4% 0.038 85.8);
+    --color-orange-100: oklch(26.6% 0.055 80.9);
+    --color-orange-200: oklch(41.3% 0.087 75.3);
+    --color-orange-300: oklch(54.9% 0.116 73.9);
+    --color-orange-400: oklch(67.7% 0.144 73.2);
+    --color-orange-500: oklch(79.8% 0.171 72.2);
+    --color-orange-600: oklch(83.2% 0.159 78.9);
+    --color-orange-700: oklch(86.9% 0.132 82.1);
+    --color-orange-800: oklch(90.9% 0.093 83.2);
+    --color-orange-900: oklch(95.4% 0.048 84.6);
+    --color-orange-950: oklch(97.6% 0.024 83.4);
+    --color-orange-970: oklch(98.6% 0.014 84.6);
+    --color-orange-990: oklch(99.5% 0.005 78.3);
+
+    --color-gray-100: oklch(21.8% 0 0);
+    --color-gray-150: oklch(26.9% 0 0);
+    --color-gray-200: oklch(32.1% 0 0);
+    --color-gray-300: oklch(41.7% 0 0);
+    --color-gray-350: oklch(46.4% 0 0);
+    --color-gray-400: oklch(50.7% 0 0);
+    --color-gray-500: oklch(59.4% 0 0);
+    --color-gray-600: oklch(68% 0 0);
+    --color-gray-700: oklch(76.7% 0 0);
+    --color-gray-800: oklch(84.5% 0 0);
+    --color-gray-900: oklch(92.5% 0 0);
+    --color-gray-950: oklch(96.1% 0 0);
+}
+
+@layer components {
+    .typography {
+        a {
+            color: var(--color-orange-700);
+            &:hover {
+                color: var(--color-orange-800);
+            }
+        }
+    }
+}
+
+@utility container {
+    padding-inline: 0.75rem;
+    margin-inline: auto;
+}
+
+@utility sm {
+    padding-inline: 2rem;
+}
