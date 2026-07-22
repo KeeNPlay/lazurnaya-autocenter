@@ -3,7 +3,7 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-  modules: ['@nuxtjs/google-fonts'],
+  modules: ['@nuxtjs/google-fonts', '@nuxt/icon'],
   css: ['./assets/css/main.css'],
 
   vite: {
@@ -24,4 +24,7 @@ export default defineNuxtConfig({
       }
     },
   },
+  icon: {
+    mode: 'svg',
+  }
 })
