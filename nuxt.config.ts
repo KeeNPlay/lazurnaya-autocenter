@@ -1,4 +1,5 @@
 import tailwindcss from "@tailwindcss/vite";
+import { resolveAlias } from "nuxt/kit";
 
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
@@ -26,5 +27,11 @@ export default defineNuxtConfig({
   },
   icon: {
     mode: 'svg',
+    customCollections: [
+      {
+        prefix: 'custom-icons',
+        dir: resolveAlias('./app/assets/custom-icons')
+      }
+    ]
   }
 })
