@@ -35,21 +35,15 @@
 }
 
 @layer components {
-    .typography {
-        a {
-            color: var(--color-orange-700);
-            &:hover {
-                color: var(--color-orange-800);
-            }
-        }
+    .nav-link {
+        @apply py-2 dark:text-gray-900 text-sm font-medium cursor-pointer 
+        transition-all duration-200 dark:hover:text-white 2xl:py-2.5 
+        2xl:text-lg;
     }
-}
 
-@utility container {
-    padding-inline: 0.75rem;
-    margin-inline: auto;
-}
-
-@utility sm {
-    padding-inline: 2rem;
+    .nav-link-active {
+        @apply px-5.5 dark:bg-gray-150 dark:text-white font-semibold 
+        rounded-md transition-all duration-200 dark:hover:text-gray-900 
+        2xl:px-7 2xl:rounded-lg;
+    }
 }
