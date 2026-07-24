@@ -4,7 +4,7 @@ import { resolveAlias } from "nuxt/kit";
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-  modules: ['@nuxtjs/google-fonts', '@nuxt/icon'],
+  modules: ['@nuxtjs/google-fonts', '@nuxt/icon', '@nuxt/image'],
   css: ['./assets/css/main.css'],
 
   vite: {
