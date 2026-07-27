@@ -1,0 +1,3 @@
+<template>
+    INSPECTION PAGE
+</template>

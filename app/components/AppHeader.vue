@@ -3,8 +3,8 @@ import { ref } from 'vue';
 const isMenuOpen = ref<boolean>(false);
 const isModalOpen = ref<boolean>(false);
 
-    const openMenu = () => (isMenuOpen.value = true)
-    const closeMenu = () => (isMenuOpen.value = false)
+const openMenu = () => (isMenuOpen.value = true)
+const closeMenu = () => (isMenuOpen.value = false)
 </script>
 
 <template>
