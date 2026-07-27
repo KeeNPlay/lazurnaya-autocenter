@@ -1,6 +1,5 @@
 <script setup lang="ts">
 const links = useNavLinks()
-const route = useRoute()
 </script>
 
 <template>
@@ -10,7 +9,7 @@ const route = useRoute()
             :key="link.path"
             :to="link.path"
             class="nav-link"
-            :class="{ 'nav-link-active': route.path === link.path }"
+            active-class="nav-link-active"
         >
             {{ link.title }}
         </NuxtLink>
