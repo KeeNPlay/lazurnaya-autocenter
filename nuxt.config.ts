@@ -4,7 +4,7 @@ import { resolveAlias } from "nuxt/kit";
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-  modules: ['@nuxtjs/google-fonts', '@nuxt/icon', '@nuxt/image'],
+  modules: ['@nuxtjs/google-fonts', '@nuxt/icon', '@nuxt/image', '@vueuse/nuxt'],
   css: ['./assets/css/main.css'],
 
   vite: {
@@ -31,7 +31,11 @@ export default defineNuxtConfig({
       {
         prefix: 'custom-icons',
         dir: resolveAlias('./app/assets/custom-icons')
-      }
-    ]
-  }
+      },
+    ],
+  },
+  image: {
+    quality: 80,
+    format: ['webp'],
+  },
 })

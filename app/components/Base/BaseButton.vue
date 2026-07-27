@@ -38,7 +38,7 @@ const variants: Record<Variant, string> = {
   secondary:
     'bg-gray-150 hover:bg-gray-200 text-white px-5 py-3 2xl:px-6 2xl:py-4',
   ghost:
-    'bg-gray-200/20 hover:bg-gray-200/40 backdrop-blur-md hover:backdrop-blur-lg border border-gray-200 text-white px-5 py-3 2xl:px-6 2xl:py-4',
+    'bg-gray-200/20 hover:bg-gray-200/40 backdrop-blur-md border border-gray-200 text-white px-5 py-3 2xl:px-6 2xl:py-4',
 }
 
 const widthClasses = computed(() => {
