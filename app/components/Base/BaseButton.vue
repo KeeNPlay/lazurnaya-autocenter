@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { NuxtLink } from '#components'
-import { computed } from 'vue'
+import { computed} from 'vue'
 
 type Variant = 'primary' | 'secondary' | 'ghost'
 type Width = 'auto' | 'full' | 'fixed'
@@ -30,15 +30,15 @@ const componentTag = computed(() => {
 })
 
 const base =
-  'inline-flex items-center justify-center gap-2 text-sm font-medium rounded-md transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:pointer-events-none 2xl:text-lg 2xl:rounded-lg'
+  'items-center justify-center gap-2 text-sm font-medium rounded-md transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:pointer-events-none 2xl:text-lg 2xl:rounded-lg'
 
 const variants: Record<Variant, string> = {
   primary:
-    'bg-orange-500 hover:bg-orange-600 text-gray-150 px-5.5 py-3 2xl:px-6 2xl:py-4',
+    'bg-orange-500 hover:bg-orange-600 text-gray-150 px-5 py-3 2xl:px-6 2xl:py-4',
   secondary:
-    'bg-gray-150 hover:bg-gray-200 text-white px-5.5 py-3 2xl:px-6 2xl:py-4',
+    'bg-gray-150 hover:bg-gray-200 text-white px-5 py-3 2xl:px-6 2xl:py-4',
   ghost:
-    'bg-gray-200/20 hover:bg-gray-200/40 backdrop-blur-md hover:backdrop-blur-lg border border-gray-200 text-white px-5.5 py-3 2xl:px-6 2xl:py-4',
+    'bg-gray-200/20 hover:bg-gray-200/40 backdrop-blur-md hover:backdrop-blur-lg border border-gray-200 text-white px-5 py-3 2xl:px-6 2xl:py-4',
 }
 
 const widthClasses = computed(() => {

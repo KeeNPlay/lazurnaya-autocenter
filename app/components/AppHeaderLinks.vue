@@ -4,7 +4,7 @@ const route = useRoute()
 </script>
 
 <template>
-    <nav class="hidden md:flex items-center gap-x-6 2xl:gap-x-8">
+    <nav class="items-center gap-x-6 2xl:gap-x-8">
         <NuxtLink
             v-for="link in links"
             :key="link.path"
