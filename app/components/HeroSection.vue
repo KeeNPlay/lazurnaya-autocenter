@@ -3,7 +3,7 @@ const isDesktop = useMediaQuery('(min-width: 80rem)')
 </script>
 
 <template>
-    <section class="relative border-l border-r border-gray-150">
+    <section class="relative border-l border-r border-gray-150" aria-label="hero section">
         <NuxtImg
             src="/images/hero.jpg"
             alt=""
@@ -31,11 +31,11 @@ const isDesktop = useMediaQuery('(min-width: 80rem)')
                         </template>
                         <template v-else>
                             <p>Мы отличаемся</p>
-                            <BaseArticle is="mark">профессиональным подходом</BaseArticle>
+                            <BaseArticle as="mark">профессиональным подходом</BaseArticle>
                             <p>,</p>
-                            <BaseArticle is="mark">современным оборудованием</BaseArticle>
+                            <BaseArticle as="mark">современным оборудованием</BaseArticle>
                             <p>и</p>
-                            <BaseArticle is="mark">многолетним опытом</BaseArticle>
+                            <BaseArticle as="mark">многолетним опытом</BaseArticle>
                         </template>
                         <template #fallback>
                             <p>Мы отличаемся профессиональным подходом, современным оборудованием и многолетним опытом</p>
