@@ -3,7 +3,7 @@ const isDesktop = useMediaQuery('(min-width: 80rem)')
 </script>
 
 <template>
-    <section class="relative border-l border-r border-gray-150" aria-label="hero section">
+    <section class="relative border-l border-r border-gray-150" aria-label="Приветственная секция">
         <NuxtImg
             src="/images/hero.jpg"
             alt=""
@@ -15,7 +15,7 @@ const isDesktop = useMediaQuery('(min-width: 80rem)')
             loading="eager"
             preload
         />
-        <div class="relative flex flex-col gap-y-10 2xl:gap-y-12.5 items-center z-5 px-4">
+        <div class="relative flex flex-col gap-y-10 2xl:gap-y-12.5 items-center z-10 px-4">
             <div class="flex flex-col gap-y-7.5 2xl:gap-y-10">
                 <h1 class="pt-20 md:pt-28 dark:text-white text-[1.8rem] sm:text-4xl 
                            lg:text-5xl 2xl:text-6xl font-semibold text-center">
