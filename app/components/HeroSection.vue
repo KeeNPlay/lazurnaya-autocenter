@@ -15,24 +15,30 @@ const isDesktop = useMediaQuery('(min-width: 80rem)')
             loading="eager"
             preload
         />
-        <div class="relative flex flex-col gap-y-10 xl:gap-y-12.5 items-center z-5 px-4">
-            <div class="flex flex-col gap-y-7.5 xl:gap-y-10">
-                <h1 class="pt-20 md:pt-28 dark:text-white text-[1.8rem] sm:text-4xl lg:text-5xl 2xl:text-6xl font-semibold text-center">Всё в одном месте: техосмотр, мойка<br>и международные перевозки</h1>
-                <div class="px-5 py-4.5 lg:px-7.5 xl:px-10 2xl:py-6 mx-auto border border-gray-150 rounded-xl inline-flex items-center gap-x-1.25 text-center text-sm sm:text-base lg:text-lg 2xl:text-xl text-gray-600 backdrop-blur-md w-fit">
+        <div class="relative flex flex-col gap-y-10 2xl:gap-y-12.5 items-center z-5 px-4">
+            <div class="flex flex-col gap-y-7.5 2xl:gap-y-10">
+                <h1 class="pt-20 md:pt-28 dark:text-white text-[1.8rem] sm:text-4xl 
+                           lg:text-5xl 2xl:text-6xl font-semibold text-center">
+                    Всё в одном месте: техосмотр, мойка<br>и международные перевозки
+                </h1>
+                <div class="px-5 py-4.5 lg:px-7.5 2xl:px-10 2xl:py-6 mx-auto border 
+                          border-gray-150 rounded-xl inline-flex items-center gap-x-1.25
+                          text-center text-sm sm:text-base lg:text-lg 2xl:text-xl 
+                          text-gray-600 backdrop-blur-md dark:bg-gray-150/20 w-fit">
                     <ClientOnly>
-                        <template v-if="isDesktop">
-                            <span>Мы отличаемся</span>
-                            <BaseArticle>профессиональным подходом</BaseArticle>
-                            <span>,</span>
-                            <BaseArticle>современным оборудованием</BaseArticle>
-                            <span>и</span>
-                            <BaseArticle>многолетним опытом</BaseArticle>
+                        <template v-if="!isDesktop">
+                            <p>Мы отличаемся профессиональным подходом, современным оборудованием и многолетним опытом</p>
                         </template>
                         <template v-else>
-                            <span>Мы отличаемся профессиональным подходом, современным оборудованием и многолетним опытом</span>
+                            <p>Мы отличаемся</p>
+                            <BaseArticle is="mark">профессиональным подходом</BaseArticle>
+                            <p>,</p>
+                            <BaseArticle is="mark">современным оборудованием</BaseArticle>
+                            <p>и</p>
+                            <BaseArticle is="mark">многолетним опытом</BaseArticle>
                         </template>
                         <template #fallback>
-                            <span>Мы отличаемся профессиональным подходом, современным оборудованием и многолетним опытом</span>
+                            <p>Мы отличаемся профессиональным подходом, современным оборудованием и многолетним опытом</p>
                         </template>
                     </ClientOnly>
                 </div>
