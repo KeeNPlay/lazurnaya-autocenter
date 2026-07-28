@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { NuxtLink } from '#components'
-import { computed} from 'vue'
+import { computed } from 'vue'
 
 type Variant = 'primary' | 'secondary' | 'ghost'
 type Width = 'auto' | 'full' | 'fixed'
@@ -30,7 +30,7 @@ const componentTag = computed(() => {
 })
 
 const base =
-  'items-center justify-center gap-2 text-sm font-medium rounded-md transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:pointer-events-none 2xl:text-lg 2xl:rounded-lg'
+  'items-center justify-center gap-2 text-sm text-center font-medium rounded-md transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:pointer-events-none 2xl:text-lg 2xl:rounded-lg'
 
 const variants: Record<Variant, string> = {
   primary:
