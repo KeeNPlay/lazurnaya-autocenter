@@ -1,13 +1,10 @@
 <script setup lang="ts">
 
 type Format = 'svg' | 'webp' | 'png' | 'avif'
-type Role = 'presentation' | 'img'
 
 interface IProps {
     image?: string,
-    imageRole?: Role,
     imageFormat?: Format,
-    imageAlt?: string,
     imageQuality?: string,
     title: string,
     description?: string
@@ -15,10 +12,8 @@ interface IProps {
 
 const props = withDefaults(defineProps<IProps>(), {
     image: 'images/hero.jpg',
-    imageRole: 'presentation',
     imageFormat: 'webp',
     imageQuality: '80',
-    imageAlt: 'image',
 })
 
 </script>
@@ -27,10 +22,10 @@ const props = withDefaults(defineProps<IProps>(), {
     <div class="relative border-l border-r border-gray-150">
         <NuxtImg
             :src="props.image"
-            :alt="props.imageAlt"
-            :role="props.imageRole"
             :format="props.imageFormat"
             :quality="props.imageQuality"
+            alt=""
+            role="presentation"
             fit="cover"
             class="absolute inset-0 w-full h-full object-cover mix-blend-overlay"
             loading="lazy"
