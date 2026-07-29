@@ -18,7 +18,7 @@ import { advantages } from '~/constants/advantages'
     />
     <CardSection
         aria-label="Секция преимуществ"
-        image="services"
+        image="advantages"
         title="Почему выбирают нас?"
         description="Доверьте свой транспорт профессионалам, которые гарантируют качество, точность и соблюдение всех стандартов на каждом этапе работы."
         :cards="advantages"
