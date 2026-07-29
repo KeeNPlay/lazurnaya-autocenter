@@ -26,11 +26,11 @@ const orientations: Record<Orientation, string> = {
     <article class="p-7.5 lg:p-10 2xl:p-12.5 flex flex-col justify-between gap-y-6 md:gap-y-10 2xl:gap-y-15 w-full md:w-1/3 border border-gray-150">
         <div class="flex flex-col gap-y-6 lg:gap-y-3.5 2xl:gap-y-10">
             <div class="flex" :class="orientations[orientation]">
-                <slot 
-                    v-if="$slots.icon"
-                    aria-hidden="true" 
-                    name="icon"
-                />
+                <div v-if="$slots.icon" aria-hidden="true">
+                    <slot 
+                        name="icon"
+                    />
+                </div>
                 <h3 class="text-xl lg:text-2xl 2xl:text-3xl font-semibold">
                     {{ title }}
                 </h3>

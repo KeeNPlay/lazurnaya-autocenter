@@ -42,7 +42,7 @@ watch(route, (): void => emit('close'))
     >
       <div
         v-if="isOpen"
-        class="fixed inset-0 z-40 bg-black/50"
+        class="fixed inset-0 z-60 bg-black/50"
         aria-hidden="true"
         @click="emit('close')"
       />
@@ -61,7 +61,7 @@ watch(route, (): void => emit('close'))
         role="dialog"
         aria-modal="true"
         aria-label="Меню навигации"
-        class="fixed inset-y-0 left-0 z-50 flex flex-col w-full bg-gray-100 sm:w-4/5 sm:max-w-sm"
+        class="fixed inset-y-0 left-0 z-60 flex flex-col w-full bg-gray-100 sm:w-4/5 sm:max-w-sm"
         >
         <div class="flex items-center justify-between text-white border-b box-border px-4 border-gray-150 py-5">
           <AppLogo>АВТОЦЕНТР НА ЛАЗУРНОЙ</AppLogo>
