@@ -2,6 +2,7 @@
 
 import { services } from '~/constants/services'
 import { advantages } from '~/constants/advantages'
+import { reviews } from '~/constants/reviews'
 
 </script>
 
@@ -24,4 +25,5 @@ import { advantages } from '~/constants/advantages'
         :cards="advantages"
         cardOrientation="horizontal"
     />
+    <ReviewSection :review="reviews" />
 </template>
