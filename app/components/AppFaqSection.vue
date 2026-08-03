@@ -20,7 +20,7 @@ const props = defineProps<IProps>()
         description="Мы собрали полезную информацию, чтобы сделать сотрудничество максимально понятным, удобным и прозрачным"
         />
         <div class="border border-gray-150">
-            <div class="columns-1 lg:columns-2 gap-x-0">
+            <div class="columns-1 lg:columns-2 gap-x-0 [column-rule:1px_solid_var(--color-gray-150)]">
                 <FaqItem
                 v-for="(item, index) in items"
                 :key="item.question"

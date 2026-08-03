@@ -12,7 +12,7 @@ defineProps<IProps>()
 </script>
 
 <template>
-    <details class="group px-6 py-7.5 lg:px-10 2xl:px-12.5 break-inside-avoid" name="faq">
+    <details class="group px-6 py-7.5 lg:px-10 2xl:px-12.5 border-b border-gray-150 last:border-b-0 break-inside-avoid" name="faq">
         <summary class="flex gap-x-5 cursor-pointer list-none select-none marker:content-none [&::-webkit-details-marker]:hidden">
             <BaseIconBlock class="h-fit">
                 <span class="text-lg lg:text-2xl 2xl:text-3xl font-semibold transition-colors duration-200 text-white group-open:text-orange-500">{{ String(number).padStart(2, '0') }}</span> <!-- Opened ?? text-orange-700 -->
@@ -23,7 +23,7 @@ defineProps<IProps>()
                 </h3>
                 <Icon
                     name="heroicons:plus-20-solid"
-                    class="text-white text-2xl transition duration-200 group-open:text-orange-700 group-open:rotate-45" 
+                    class="text-white text-2xl transition-[transfrom,color] duration-200 group-open:text-orange-700 group-open:rotate-45" 
                 />
             </div>
         </summary>
@@ -37,7 +37,7 @@ defineProps<IProps>()
                     >
                     {{ part.value }}
                 </NuxtLink>
-                <button v-else-if="part.type === 'button'" class="text-orange-700 underline hover:text-orange-800 transition-colors cursor-pointer">
+                <button v-else-if="part.type === 'button'" type="button" class="text-orange-700 underline hover:text-orange-800 transition-colors cursor-pointer">
                     {{ part.value }}
                 </button>
                 <template v-else>{{ part.value }}</template>

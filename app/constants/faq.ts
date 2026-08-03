@@ -58,7 +58,11 @@ export const faqItems: IFaqItem[] = [
   {
     question: 'Можно ли получить консультацию перед обращением?',
     answer: [
-        {  type: 'text', value: 'Да, наши специалисты готовы проконсультировать вас по телефону или через форму на сайте.'},
+        {  type: 'text', value: 'Да, наши специалисты готовы проконсультировать Вас '},
+        { type: 'link', value: 'по телефону', to: 'tel:+375447154444', external: true },
+        {  type: 'text', value: ' или через '},
+        { type: 'button', value: 'форму на сайте' },
+        {  type: 'text', value: '.'},
     ],
   },
 ]
