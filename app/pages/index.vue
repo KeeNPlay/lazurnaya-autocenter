@@ -3,6 +3,7 @@
 import { services } from '~/constants/services'
 import { advantages } from '~/constants/advantages'
 import { reviews } from '~/constants/reviews'
+import { faqItems } from '~/constants/faq'
 
 </script>
 
@@ -26,4 +27,5 @@ import { reviews } from '~/constants/reviews'
         cardOrientation="horizontal"
     />
     <ReviewSection :review="reviews" />
+    <AppFaqSection :items="faqItems" />
 </template>
