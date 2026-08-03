@@ -12,7 +12,7 @@ defineProps<IProps>()
 </script>
 
 <template>
-    <details class="group px-6 py-7.5 lg:px-10 2xl:px-12.5 border-b border-gray-150 last:border-b-0 break-inside-avoid" name="faq">
+    <details class="group px-6 py-7.5 lg:px-10 2xl:px-12.5 border-b border-gray-150 break-inside-avoid" name="faq">
         <summary class="flex gap-x-5 cursor-pointer list-none select-none marker:content-none [&::-webkit-details-marker]:hidden">
             <BaseIconBlock class="h-fit">
                 <span class="text-lg lg:text-2xl 2xl:text-3xl font-semibold transition-colors duration-200 text-white group-open:text-orange-500">{{ String(number).padStart(2, '0') }}</span> <!-- Opened ?? text-orange-700 -->

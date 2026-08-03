@@ -4,5 +4,6 @@
     <main class="lg:px-20 2xl:px-40.5">
       <NuxtPage />
     </main>
+    <AppFooter />
   </div>
 </template>
