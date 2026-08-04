@@ -8,7 +8,7 @@ defineProps<{ review: IReview[] }>()
     <BaseSectionHeader 
       image="images/reviews.jpg"
       title="Что говорят наши клиенты"
-      description="Мы ценим доверие каждого клиента..."
+      description="Мы ценим доверие каждого клиента и стремимся обеспечивать высокий уровень сервиса, надежность и профессиональный подход"
     />
     <BaseSlider :items="review" :visible-count="3" aria-label="Отзывы клиентов">
       <template #item="{ item }">

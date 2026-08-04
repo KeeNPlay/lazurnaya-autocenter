@@ -21,7 +21,7 @@ const props = defineProps<IProps>()
         />
         <div class="border border-gray-150">
             <div class="columns-1 lg:columns-2 gap-x-0 [column-rule:1px_solid_var(--color-gray-150)]">
-                <FaqItem
+                <AppFaqItem
                 v-for="(item, index) in items"
                 :key="item.question"
                 :question="item.question"
