@@ -27,5 +27,5 @@ import { faqItems } from '~/constants/faq'
         cardOrientation="horizontal"
     />
     <ReviewSection :review="reviews" />
-    <AppFaqSection :items="faqItems" />
+    <FaqSection :items="faqItems" />
 </template>
