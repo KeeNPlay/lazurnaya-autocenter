@@ -4,7 +4,13 @@ import { resolveAlias } from "nuxt/kit";
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-  modules: ['@nuxtjs/google-fonts', '@nuxt/icon', '@nuxt/image', '@vueuse/nuxt'],
+  modules: [
+    '@nuxtjs/google-fonts',
+    '@nuxt/icon',
+    '@nuxt/image',
+    '@vueuse/nuxt',
+    '@nuxtjs/turnstile',
+  ],
   css: ['./assets/css/main.css'],
 
   vite: {
@@ -37,5 +43,13 @@ export default defineNuxtConfig({
   image: {
     quality: 80,
     format: ['webp'],
+  },
+  turnstile: {
+    siteKey: process.env.NUXT_TURNSTILE_SITE_KEY,
+  },
+  runtimeConfig: {
+    turnstile: {
+      secretKey: process.env.NUXT_TURNSTILE_SECRET_KEY,
+    },
   },
 })
