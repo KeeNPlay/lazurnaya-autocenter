@@ -36,6 +36,14 @@
     --breakpoint-2xl: 135rem;
     --breakpoint-xl: 90rem;
     --breakpoint-lg: 80rem; 
+    
+    --inset-shadow-4xl: inset 0 0 24px 16px;
+    --inset-shadow-3xl: inset 0 0 20px 10px;
+    --inset-shadow-2xl: inset 0 0 14px 6px;
+    --inset-shadow-lg: inset 0 0 12px 5px;
+    --inset-shadow-base: inset 0 0 10px 4px;
+    --inset-shadow-sm: inset 0 0 8px 3px;
+    --inset-shadow-xs: inset 0 0 6px 2px;
 }
 
 @layer components {
