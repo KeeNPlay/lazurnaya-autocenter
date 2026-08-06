@@ -11,7 +11,7 @@ const props = defineProps<IProps>()
 
 <template>
     <section
-        class="flex flex-col"
+        class="flex flex-col mx-4 lg:mx-0"
         aria-label="Секция вопрос-ответ"
     >
         <BaseSectionHeader

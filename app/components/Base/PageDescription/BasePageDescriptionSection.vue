@@ -17,7 +17,7 @@ defineProps<Props>()
 
 <template>
     <section 
-        class="flex flex-col" 
+        class="flex flex-col mx-4 lg:mx-0" 
         aria-label="Секция гостехосмотра"
     >
         <BaseSectionHeader 
@@ -33,7 +33,7 @@ defineProps<Props>()
                 <h3 class="text-2xl lg:text-4xl 2xl:text-5xl font-semibold">{{ title }}</h3>
                 <p class="text-sm lg:text-base 2xl:text-lg text-gray-900">{{ description }}</p>
             </div>
-            <BaseArticle as="mark" class="text-base lg:text-lg 2xl:text-xl w-fit">{{ descriptionBadge }}</BaseArticle>
+            <BaseArticle as="mark" class="text-sm sm:text-base lg:text-lg 2xl:text-xl w-fit">{{ descriptionBadge }}</BaseArticle>
         </section>
         <section aria-label="Секция порядка прохождения гостехосмотра">
             <div class="grid border-t border-l border-gray-150 grid-cols-1 md:grid-cols-2">

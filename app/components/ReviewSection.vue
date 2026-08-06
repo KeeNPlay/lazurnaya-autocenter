@@ -4,7 +4,7 @@ defineProps<{ review: IReview[] }>()
 </script>
 
 <template>
-  <section class="flex flex-col">
+  <section class="flex flex-col mx-4 lg:mx-0">
     <BaseSectionHeader 
       image="images/reviews.jpg"
       title="Что говорят наши клиенты"

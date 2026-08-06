@@ -17,9 +17,6 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits<{
-  buttonClick: [value: string]
-}>()
 </script>
 
 <template>
