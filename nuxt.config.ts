@@ -11,10 +11,17 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     '@nuxtjs/turnstile',
   ],
-  css: ['./assets/css/main.css'],
+  css: [
+    './assets/css/main.css',
+    '@vuepic/vue-datepicker/dist/main.css'
+  ],
 
   vite: {
     plugins: [tailwindcss()],
+  },
+
+  build: {
+    transpile: ['@vuepic/vue-datepicker'],
   },
 
   app: {

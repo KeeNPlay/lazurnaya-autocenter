@@ -2,6 +2,11 @@
 
 import { inspectionItems } from '~/constants/inspectionProcedure'
 
+useSeoMeta({
+  title: 'Гостехосмотр — Автоцентр на Лазурной',
+  description: 'Официальный государственный технический осмотр для всех видов транспорта в Республике Беларусь.',
+})
+
 </script>
 
 <template>
@@ -14,4 +19,5 @@ import { inspectionItems } from '~/constants/inspectionProcedure'
         image="services"
         :items="inspectionItems"
     />
+    <FormsBookingSection default-tab="inspection" />
 </template>
