@@ -14,7 +14,7 @@ const scheduleText = computed(() =>
 </script>
 
 <template>
-  <section class="flex flex-col mx-4 lg:mx-0" aria-label="Форма записи">
+  <section class="flex flex-col mx-4 lg:mx-0" aria-label="Форма записи" id="form">
     <BaseFormHeader title="Автоцентр на Лазурной" :description="scheduleText" class="py-12.5 lg:py-25 2xl:py-30">
       <template #tabs>
         <BaseFormTabs v-model="activeTab" :tabs="tabs" />

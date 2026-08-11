@@ -1,4 +1,14 @@
 <script setup lang="ts">
+const widgetSize = ref('normal')
+
+onMounted(() => {
+  if (window.innerWidth < 360) {
+    widgetSize.value = 'compact'
+  } else {
+    widgetSize.value = 'flexible'
+  }
+})
+
 interface Props {
   modelValue: string | undefined
 }
@@ -11,7 +21,7 @@ defineEmits<{ 'update:modelValue': [value: string | undefined] }>()
   <NuxtTurnstile
     class="w-full"
     theme="dark"
-    size="compact"
+    :data-size="widgetSize"
     language="ru"
     :model-value="modelValue"
     @update:model-value="$emit('update:modelValue', $event)"

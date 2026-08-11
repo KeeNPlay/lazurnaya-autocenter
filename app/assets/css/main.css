@@ -59,3 +59,7 @@
         2xl:px-7 2xl:rounded-lg;
     }
 }
+
+@layer vendor {
+  @import "@vuepic/vue-datepicker/dist/main.css";
+}

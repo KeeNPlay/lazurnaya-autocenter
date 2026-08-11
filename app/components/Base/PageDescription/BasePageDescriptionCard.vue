@@ -49,6 +49,7 @@ const props = defineProps({
                         v-if="part.type === 'link'"
                         :to="part.to"
                         :external="part.external"
+                        :target="part.external ? '_blank' : undefined"
                         class="text-orange-700 underline hover:text-orange-800 transition-colors"
                     >
                         {{ part.value }}

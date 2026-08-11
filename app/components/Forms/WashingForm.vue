@@ -10,9 +10,35 @@ const form = reactive({
   washType: '',
 })
 
+interface TimeOptions {
+  label: string,
+  value: string,
+}
+
+const timeOptions: TimeOptions[] = [
+  {label: '8:00', value: '08:00:00'},
+  {label: '8:30', value: '08:30:00'},
+  {label: '9:00', value: '09:00:00'},
+  {label: '9:30', value: '09:30:00'},
+  {label: '10:00', value: '10:00:00'},
+  {label: '10:30', value: '10:30:00'},
+  {label: '11:00', value: '11:00:00'},
+  {label: '11:30', value: '11:30:00'},
+  {label: '12:00', value: '12:00:00'},
+  {label: '12:30', value: '12:30:00'},
+  {label: '13:00', value: '13:00:00'},
+  {label: '13:30', value: '13:30:00'},
+  {label: '14:00', value: '14:00:00'},
+  {label: '14:30', value: '14:30:00'},
+  {label: '15:00', value: '15:00:00'},
+  {label: '15:30', value: '15:30:00'},
+]
+
 const vehicleTypeOptions = [
   { label: 'Легковой автомобиль', value: 'car' },
+  { label: 'Грузовой автомобиль', value: 'truck' },
   { label: 'Автопоезд', value: 'truck-trailer' },
+  { label: 'Спецтехника', value: 'truck-trailer' },
 ]
 
 const washTypeOptions = [
@@ -40,16 +66,16 @@ async function onSubmit(): Promise<void> {
   <form class="p-6 lg:p-15 2xl:p-20 flex flex-col gap-y-7.5 2xl:gap-y-10 outline-1 outline-gray-150" @submit.prevent="onSubmit">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-y-7.5 2xl:gap-y-10 gap-x-0 lg:gap-x-7.5">
       <BaseFormField label="Дата" required>
-        <BaseFormInput v-model="form.date" placeholder="дд.мм.гггг" required />
+        <BaseFormDatepicker v-model="form.date" placeholder="дд.мм.гггг" required />
       </BaseFormField>
       <BaseFormField label="Время" required>
-        <BaseFormInput v-model="form.time" placeholder="12:00" required />
+        <BaseFormSelect v-model="form.time" :options="timeOptions" placeholder="12:00" required />
       </BaseFormField>
       <BaseFormField label="Имя / Компания" required>
-        <BaseFormInput v-model="form.nameOrCompany" placeholder='Арсен или ООО "Стальное в кармане"' required />
+        <BaseFormInput v-model="form.nameOrCompany" placeholder='Иван или ООО "Межтранс"' required />
       </BaseFormField>
       <BaseFormField label="Номер телефона" required>
-        <BaseFormInput v-model="form.phone" type="tel" placeholder="+375 (__) ___ __ __" required />
+        <BaseFormPhoneInput v-model="form.phone" required />
       </BaseFormField>
       <BaseFormField label="Тип автомобиля" required>
         <BaseFormSelect v-model="form.vehicleType" :options="vehicleTypeOptions" placeholder="Автопоезд" required />

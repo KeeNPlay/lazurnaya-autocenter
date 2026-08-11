@@ -13,7 +13,6 @@ export default defineNuxtConfig({
   ],
   css: [
     './assets/css/main.css',
-    '@vuepic/vue-datepicker/dist/main.css'
   ],
 
   vite: {
