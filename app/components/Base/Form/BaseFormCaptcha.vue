@@ -2,7 +2,7 @@
 const widgetSize = ref('normal')
 
 onMounted(() => {
-  if (window.innerWidth < 360) {
+  if (window.innerWidth < 440) {
     widgetSize.value = 'compact'
   } else {
     widgetSize.value = 'flexible'
