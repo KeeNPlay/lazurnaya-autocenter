@@ -6,7 +6,7 @@ interface Tab {
 
 interface Props {
   modelValue: string
-  tabs: Tab[]
+  tabs: readonly Tab[]
 }
 
 defineProps<Props>()
