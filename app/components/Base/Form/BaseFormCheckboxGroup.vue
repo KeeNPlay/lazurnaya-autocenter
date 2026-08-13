@@ -41,7 +41,6 @@ function isChecked(value: string): boolean {
         >
           <input
             type="checkbox"
-            required
             class="peer sr-only"
             :checked="isChecked(opt.value)"
             @change="toggle(opt.value)"
