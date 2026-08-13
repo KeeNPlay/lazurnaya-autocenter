@@ -48,16 +48,27 @@ const timeOptions: TimeOptions[] = [
   { label: '16:30', value: '16:30:00' },
 ]
 
-const isSubmitting = ref(false)
+const isSubmitting = ref<boolean>(false)
+const submitError = ref<boolean>(false)
+const submitSuccess = ref<boolean>(false)
 
 async function onSubmit(): Promise<void> {
   if (!canSubmit.value) return
+  
   isSubmitting.value = true
+  submitError.value = false
+  submitSuccess.value = false
+  
   try {
     await $fetch('/api/forms/inspection', {
       method: 'POST',
       body: { ...form, captchaToken: captchaToken.value },
     })
+    
+    submitSuccess.value = true
+  } catch (error) {
+    submitError.value = true
+    console.error('Ошибка отправки формы:', error)
   } finally {
     isSubmitting.value = false
   }
@@ -91,6 +102,8 @@ async function onSubmit(): Promise<void> {
       <BaseFormConsent v-model="consent" />
       <BaseFormCaptcha v-model="captchaToken" />
     </div>
+
+    <BaseFormAlert v-if="submitError || submitSuccess" :variant="submitError ? 'error' : 'success'"/>
 
     <BaseFormSubmit :loading="isSubmitting" :disabled="!canSubmit" />
   </form>

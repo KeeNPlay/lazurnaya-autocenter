@@ -1,48 +1,51 @@
 <script setup lang="ts">
+import { reactive, ref } from 'vue'
+import {
+  CARGO_TYPE_OPTIONS,
+  LOADING_METHOD_OPTIONS,
+  BUDGET_RANGE,
+  createEmptyTransportationForm,
+  type TransportationForm
+} from '~/constants/transportationForm'
+
+
 const { consent, captchaToken, canSubmit } = useFormConsent()
 
-const form = reactive({
-  fromCity: '',
-  toCity: '',
-  departureDate: '',
-  deliveryTerm: '',
-  nameOrCompany: '',
-  phone: '',
-  dimensions: { length: '', width: '', height: '', weight: '' },
-  cargoTypes: [] as string[],
-  loadingMethods: [] as string[],
-  unloadingMethods: [] as string[],
-  comment: '',
-})
+const form = reactive<TransportationForm>(createEmptyTransportationForm())
 
-const budget = ref<[number, number]>([1000, 5000])
+const budget = ref<[number, number]>([...BUDGET_RANGE.default])
 
-const cargoTypeOptions = [
-  { label: 'Тепловой режим', value: 'thermal' },
-  { label: 'Без теплового режима', value: 'no-thermal' },
-  { label: 'Хрупкий груз', value: 'fragile' },
-  { label: 'Жидкий груз', value: 'liquid' },
-  { label: 'Рефрижератор', value: 'refrigerator' },
-  { label: 'Неизвестно', value: 'unknown' },
-]
+const isSubmitting = ref<boolean>(false)
+const submitError = ref<boolean>(false)
+const submitSuccess = ref<boolean>(false)
 
-const methodOptions = [
-  { label: 'Задняя', value: 'rear' },
-  { label: 'Боковая', value: 'side' },
-  { label: 'Верхняя', value: 'top' },
-  { label: 'Иной способ', value: 'other' },
-]
-
-const isSubmitting = ref(false)
+const resetForm = (): void => {
+  Object.assign(form, createEmptyTransportationForm())
+  budget.value = [...BUDGET_RANGE.default]
+}
 
 async function onSubmit(): Promise<void> {
   if (!canSubmit.value) return
+
   isSubmitting.value = true
+  submitError.value = false
+  submitSuccess.value = false
+
   try {
     await $fetch('/api/forms/transportation', {
       method: 'POST',
-      body: { ...form, budget: budget.value, captchaToken: captchaToken.value },
+      body: {
+        ...form,
+        budget: budget.value,
+        captchaToken: captchaToken.value
+      }
     })
+
+    submitSuccess.value = true
+    resetForm()
+  } catch (error) {
+    submitError.value = true
+    console.error('Ошибка отправки формы:', error)
   } finally {
     isSubmitting.value = false
   }
@@ -78,25 +81,32 @@ async function onSubmit(): Promise<void> {
         <p class="text-gray-900 text-xs lg:text-base 2xl:text-lg font-light">Укажите ориентировочные размеры и параметры груза</p>
       </div>
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-7.5 2xl:gap-10">
-        <BaseFormField label="Длина">
-          <BaseFormInput v-model="form.dimensions.length" type="number" placeholder="13000 см" step="100" />
+        <BaseFormField label="Длина, см">
+          <BaseFormInput v-model="form.dimensions.length" type="number" placeholder="13000" step="100" />
         </BaseFormField>
-        <BaseFormField label="Ширина">
-          <BaseFormInput v-model="form.dimensions.width" type="number" placeholder="3000 см" step="100" />
+        <BaseFormField label="Ширина, см">
+          <BaseFormInput v-model="form.dimensions.width" type="number" placeholder="3000" step="100" />
         </BaseFormField>
-        <BaseFormField label="Высота">
-          <BaseFormInput v-model="form.dimensions.height" type="number" placeholder="3000 см" step="100" />
+        <BaseFormField label="Высота, см">
+          <BaseFormInput v-model="form.dimensions.height" type="number" placeholder="3000" step="100" />
         </BaseFormField>
-        <BaseFormField label="Общий вес">
-          <BaseFormInput v-model="form.dimensions.weight" type="number" placeholder="18000 кг" step="100" />
+        <BaseFormField label="Общий вес, кг">
+          <BaseFormInput v-model="form.dimensions.weight" type="number" placeholder="18000" step="100" />
         </BaseFormField>
       </div>
     </div>
 
-    <BaseFormCheckboxGroup v-model="form.cargoTypes" title="Тип грузоперевозки" :options="cargoTypeOptions" />
-    <BaseFormRangeSlider v-model="budget" title="Ваш бюджет" description="Передвигайте слайдер для регулировки бюджета" :min="0" :max="10000" :step="100" />
-    <BaseFormCheckboxGroup v-model="form.loadingMethods" title="Способ загрузки" :options="methodOptions" />
-    <BaseFormCheckboxGroup v-model="form.unloadingMethods" title="Способ разгрузки" :options="methodOptions" />
+    <BaseFormCheckboxGroup v-model="form.cargoTypes" title="Тип грузоперевозки" :options="CARGO_TYPE_OPTIONS" />
+    <BaseFormRangeSlider
+      v-model="budget"
+      title="Ваш бюджет"
+      description="Передвигайте слайдер для регулировки бюджета"
+      :min="BUDGET_RANGE.min"
+      :max="BUDGET_RANGE.max"
+      :step="BUDGET_RANGE.step"
+    />
+    <BaseFormCheckboxGroup v-model="form.loadingMethods" title="Способ загрузки" :options="LOADING_METHOD_OPTIONS" />
+    <BaseFormCheckboxGroup v-model="form.unloadingMethods" title="Способ разгрузки" :options="LOADING_METHOD_OPTIONS" />
 
     <BaseFormField label="Комментарий">
       <BaseFormTextarea v-model="form.comment" placeholder="Забрать груз на сортировочном центре и доставить на адрес разгрузки." />
@@ -106,6 +116,9 @@ async function onSubmit(): Promise<void> {
       <BaseFormConsent v-model="consent" note="Не является средством расчёта на территории Республики Беларусь" />
       <BaseFormCaptcha v-model="captchaToken" />
     </div>
+
+    <BaseFormAlert v-if="submitError || submitSuccess" :variant="submitError ? 'error' : 'success'"/>
+
     <BaseFormSubmit :loading="isSubmitting" :disabled="!canSubmit" />
   </form>
 </template>
