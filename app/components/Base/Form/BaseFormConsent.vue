@@ -73,7 +73,7 @@ function toggle(key: keyof ConsentModel, checked: boolean, current: ConsentModel
         </span>
       </label>
 
-      <p v-if="note" class="text-gray-300 text-xs">{{ note }}</p>
+      <p v-if="note" class="text-gray-900 text-[0.625rem] lg:text-sm 2xl:text-lg leading-relaxed"><span class="text-orange-700 mr-1">*</span>{{ note }}</p>
     </div>
   </fieldset>
 </template>
