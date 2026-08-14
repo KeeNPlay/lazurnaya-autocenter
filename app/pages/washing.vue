@@ -1,11 +1,15 @@
 <script setup lang="ts">
 
 import { washingItems } from '~/constants/washingAdvantages'
+import { WASHING_PRICELIST } from '~/constants/pricelist'
 
 useSeoMeta({
   title: 'Мойка — Автоцентр на Лазурной',
   description: 'Оказываем услуги комплексной мойки грузовых автомобилей, автобусов, прицепов и спецтехники с учетом особенностей каждого типа транспорта.',
 })
+
+const currentSeason = useSeason()
+const washingPricelistLink = computed<string>(() => WASHING_PRICELIST[currentSeason])
 
 </script>
 
@@ -20,4 +24,8 @@ useSeoMeta({
         :items="washingItems"
     />
     <FormsBookingSection default-tab="washing" />
+    <PricelistSection 
+        link="docs/washing_pricelist.pdf"
+        description="Ознакомьтесь с актуальными тарифами на услуги мойки грузового транспорта, автобусов и спецтехники. Мы предлагаем прозрачные цены для двух сезонов: зимний (с 01.12 по 01.03) и летний."
+    />
 </template>

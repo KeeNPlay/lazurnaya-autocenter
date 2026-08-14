@@ -1,37 +1,39 @@
 <script setup lang="ts">
 
 export interface ICard {
-  cardTitle: string
-  cardDescription?: string
-  cardIcon?: string
-  cardLink?: string
+    cardTitle: string
+    cardDescription?: string
+    cardIcon?: string
+    cardLink?: string
 }
 
 interface IProps {
-  title: string
-  description?: string
-  image: string
-  cards: ICard[]
-  cardPerRow?: 1 | 2 | 3 | 4
-  cardOrientation?: 'vertical' | 'horizontal'
+    headerVisible?: boolean,
+    title: string
+    description?: string
+    image: string
+    cards: ICard[]
+    cardPerRow?: 1 | 2 | 3 | 4
+    cardOrientation?: 'vertical' | 'horizontal'
 }
 
 const gridCols: Record<number, string> = {
-  1: 'grid-cols-1',
-  2: 'grid-cols-1 md:grid-cols-2',
-  3: 'grid-cols-1 md:grid-cols-3',
-  4: 'grid-cols-1 md:grid-cols-4',
+    1: 'grid-cols-1',
+    2: 'grid-cols-1 md:grid-cols-2',
+    3: 'grid-cols-1 md:grid-cols-3',
+    4: 'grid-cols-1 md:grid-cols-4',
 }
 
 const props = withDefaults(defineProps<IProps>(), {
-  cardPerRow: 2,
+    cardPerRow: 2,
+    headerVisible: true,
 })
 
 </script>
 
 <template>
     <section class="flex flex-col mx-4 lg:mx-0">
-        <BaseSectionHeader 
+        <BaseSectionHeader
             :image="`images/${image}.jpg`"
             :title="title"
             :description="description"
