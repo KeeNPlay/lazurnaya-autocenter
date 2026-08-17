@@ -4,9 +4,13 @@ import { watch, onUnmounted } from 'vue'
 interface Props {
     modelValue: boolean
     title?: string
+    loading?: boolean
 }
 
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+  loading: false
+})
+
 const emit = defineEmits<{ 'update:modelValue': [value: boolean] }>()
 
 const close = (): void => {
@@ -55,6 +59,7 @@ onUnmounted(() => {
             <div class="fixed inset-0 bg-black/50" @click="close" />
 
             <div class="relative my-auto">
+                <BaseLoader v-if="loading" />
             
                 <slot />
                 <BaseButton

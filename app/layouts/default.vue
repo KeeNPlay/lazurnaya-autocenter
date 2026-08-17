@@ -2,9 +2,9 @@
 import { watch } from 'vue'
 
 const { isOpen, closeModal } = useBookingModal()
+const { isLoading, loaderVariant } = usePageLoader()
 const route = useRoute()
 
-// Закрываем модалку автоматически при переходе на другую страницу
 watch(
   () => route.fullPath,
   () => closeModal()
@@ -19,8 +19,10 @@ watch(
     </main>
     <AppFooter />
 
+    <BaseLoader v-if="isLoading" :variant="loaderVariant" />
+
     <BaseModal :model-value="isOpen" title="Онлайн-запись" @update:model-value="closeModal">
-      <FormsBookingSection class="bg-gray-100" />
+      <FormsBookingSection class="bg-gray-100"/>
     </BaseModal>
   </div>
 </template>
