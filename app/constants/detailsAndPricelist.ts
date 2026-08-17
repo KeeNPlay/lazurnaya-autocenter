@@ -12,9 +12,9 @@ export const clientInfo: ICardDescription[] = [
             { type: 'text', value: 'Р/с BY57AKBB30121263300173000000\n' },
             { type: 'text', value: 'Код банка: AKBBBY2Х\n' },
             { type: 'text', value: 'Телефон/факс: ' },
-            { type: 'link', value: '+375 (232) 50-00-01\n', to: 'tel:+375232500001', external: true },
+            { type: 'link', value: '+375 (44) 715 44 44\n', to: 'tel:+375447154444', external: true },
             { type: 'text', value: 'E-mail: '},
-            { type: 'link', value: 'valerydrozd@gmail.com\n', to: 'mailto:valerydrozd@gmail.com', external: true }
+            { type: 'link', value: 'avtolaz19@yandex.ru\n', to: 'mailto:avtolaz19@yandex.ru', external: true }
         ]
     },
     {
