@@ -65,6 +65,7 @@
       :is="componentTag"
       :to="isLink ? props.to : undefined"
       :external="isLink ? props.external : undefined"
+      :target="props.external ? '_blank' : undefined"
       :componentType="!isLink ? props.componentType : undefined"
       :disabled="!isLink ? props.disabled : undefined"
       :class="classes"
