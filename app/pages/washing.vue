@@ -25,7 +25,7 @@ const washingPricelistLink = computed<string>(() => WASHING_PRICELIST[currentSea
     />
     <FormsBookingSection default-tab="washing" />
     <PricelistSection 
-        link="docs/washing_pricelist.pdf"
+        :link="washingPricelistLink"
         description="Ознакомьтесь с актуальными тарифами на услуги мойки грузового транспорта, автобусов и спецтехники. Мы предлагаем прозрачные цены для двух сезонов: зимний (с 01.12 по 01.03) и летний."
     />
 </template>
