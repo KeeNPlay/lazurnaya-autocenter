@@ -11,9 +11,9 @@ export const transportationItems: ICardDescription[] = [
         title: 'Безопасность',
         descriptionPart: [
             { type: 'text', value: 'Перевозку грузов осуществляем на основании лицензии Минтранса Республики Беларусь ' },
-            { type: 'link', value: 'лицензии Минтранса Республики Беларусь', to: '#', external: true },
+            { type: 'link', value: 'лицензии Минтранса Республики Беларусь', to: 'docs/licence.pdf', external: true },
             { type: 'text', value: '. Ответственность застрахована ' },
-            { type: 'link', value: 'полисом CMR-страхования', to: '#', external: true },
+            { type: 'link', value: 'полисом CMR-страхования', to: 'docs/cmr.pdf', external: true },
             { type: 'text', value: ', с лимитом ответственности в 500 000 евро.' },
         ],
     },
