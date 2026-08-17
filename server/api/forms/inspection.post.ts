@@ -9,7 +9,6 @@ export default defineEventHandler(async (event) => {
   if (!isValid) {
     throw createError({ statusCode: 403, message: 'Captcha verification failed' })
   }
-
-  // Отправка письма / сохранение заявки в БД
+  
   return { success: true }
 })
