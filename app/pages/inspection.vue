@@ -21,7 +21,7 @@ useSeoMeta({
     />
     <FormsBookingSection default-tab="inspection" />
     <PricelistSection 
-        link="docs/inpection_pricelist.pdf"
+        link="docs/inspection_pricelist.pdf"
         description="Ознакомьтесь с действующими тарифами на услуги государственного технического осмотра, установленными в соответствии с законодательством Республики Беларусь"
     />
 </template>
