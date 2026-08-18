@@ -41,7 +41,9 @@ onUnmounted(() => {
         class="sticky inset-x-0 top-0 z-50 px-4 py-5 border-b box-border border-gray-150 dark:bg-gray-100 lg:px-20 2xl:px-40.5"
     >
         <div class="flex items-center justify-between">
-            <AppLogo>АВТОЦЕНТР НА ЛАЗУРНОЙ</AppLogo>
+            <NuxtLink to="/">
+                <AppLogo>АВТОЦЕНТР НА ЛАЗУРНОЙ</AppLogo>
+            </NuxtLink>
             <AppHeaderLinks class="hidden lg:flex" />
             <BaseButton class="hidden lg:flex" @click="openModal">
                 Онлайн-запись

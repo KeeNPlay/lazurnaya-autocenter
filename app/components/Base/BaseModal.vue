@@ -56,13 +56,14 @@ onUnmounted(() => {
             aria-modal="true"
             :aria-label="title"
         >
-            <div class="fixed inset-0 bg-black/50" @click="close" />
+            <div class="fixed inset-0 bg-black/50 cursor-pointer" @click="close" />
 
             <div class="relative my-auto">
                 <BaseLoader v-if="loading" />
             
                 <slot />
                 <BaseButton
+                    variant="transparent"
                     type="button"
                     class="absolute top-4 right-4 transition-colors cursor-pointer"
                     aria-label="Закрыть окно"
