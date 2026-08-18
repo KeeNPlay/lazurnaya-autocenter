@@ -28,7 +28,7 @@ const props = withDefaults(defineProps<IProps>(), {
             role="presentation"
             fit="cover"
             class="absolute inset-0 w-full h-full object-cover mix-blend-overlay"
-            loading="lazy"
+            loading="eager"
         />
         <div class="absolute inset-0 bg-orange-500/20 pointer-events-none mix-blend-color"></div>
         <div class="relative flex flex-col gap-y-4 px-4 py-12.5 lg:px-65.5 lg:py-20 2xl:px-75 2xl:py-25 text-center z-10">

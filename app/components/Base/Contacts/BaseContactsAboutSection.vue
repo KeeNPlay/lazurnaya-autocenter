@@ -19,6 +19,7 @@
                 fit="cover"
                 class="absolute inset-0 w-full h-full object-cover mix-blend-overlay"
                 loading="eager"
+                fetchpriority="low"
             />
 
             <div class="absolute inset-x-0 top-1/2 h-0.5 -translate-y-1/2 bg-linear-to-r from-transparent via-orange-500 to-transparent" />

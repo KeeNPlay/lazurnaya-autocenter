@@ -14,6 +14,7 @@ const { openModal } = useBookingModal()
             format="webp"
             quality="80"
             loading="eager"
+            fetchpriority="high"
             preload
         />
         <div class="relative flex flex-col gap-y-10 2xl:gap-y-12.5 items-center z-10 px-4">
