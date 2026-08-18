@@ -32,10 +32,10 @@ const props = withDefaults(defineProps<IProps>(), {
         />
         <div class="absolute inset-0 bg-orange-500/20 pointer-events-none mix-blend-color"></div>
         <div class="relative flex flex-col gap-y-4 px-4 py-12.5 lg:px-65.5 lg:py-20 2xl:px-75 2xl:py-25 text-center z-10">
-            <h2 class="text-2xl md:text-4xl 2xl:text-5xl font-semibold dark:text-white">
+            <h2 class="text-2xl md:text-4xl 2xl:text-5xl font-semibold text-white">
                 {{ title }}
             </h2>
-            <p class="text-sm md:text-base 2xl:text-lg font-light dark:text-gray-900">
+            <p class="text-sm md:text-base 2xl:text-lg font-light text-gray-900">
                 {{ description }}
             </p>
          </div>

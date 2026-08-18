@@ -5,7 +5,7 @@ const links = useNavLinks()
 </script>
 
 <template>
-    <footer class="flex flex-col px-4 py-7.5 lg:px-20 lg:py-10 2xl:px-40.5 2xl:py-12.5 gap-y-7.5 lg:gap-y-0 outline-1 outline-gray-150 dark:bg-gray-100">
+    <footer class="flex flex-col px-4 py-7.5 lg:px-20 lg:py-10 2xl:px-40.5 2xl:py-12.5 gap-y-7.5 lg:gap-y-0 outline-1 outline-gray-150 bg-gray-100">
         <div class="flex flex-col lg:flex-row items-center justify-between gap-y-7.5 lg:gap-y-0">
             <AppLogo>АВТОЦЕНТР НА ЛАЗУРНОЙ</AppLogo>
             <nav class="flex flex-wrap justify-center items-center pt-7.5 lg:pt-0 gap-x-6 2xl:gap-x-8 border-t lg:border-none border-gray-150">

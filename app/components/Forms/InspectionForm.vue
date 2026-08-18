@@ -98,7 +98,7 @@ async function onSubmit(): Promise<void> {
       </BaseFormField>
     </div>
 
-    <div class="flex flex-col p-6 lg:p-7.5 2xl:p-10 gap-y-7.5 2xl:gap-y-10 dark:bg-gray-150/50 border border-gray-150 rounded-md 2xl:rounded-lg">
+    <div class="flex flex-col p-6 lg:p-7.5 2xl:p-10 gap-y-7.5 2xl:gap-y-10 bg-gray-150/50 border border-gray-150 rounded-md 2xl:rounded-lg">
       <BaseFormConsent v-model="consent" />
       <BaseFormCaptcha v-model="captchaToken" />
     </div>

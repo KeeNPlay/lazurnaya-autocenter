@@ -12,7 +12,7 @@ watch(
 </script>
 
 <template>
-  <div class="flex flex-col min-h-screen font-sans dark dark:bg-gray-100 dark:text-white">
+  <div class="flex flex-col min-h-screen font-sans bg-gray-100 text-white">
     <AppHeader />
     <main class="lg:px-20 2xl:px-40.5">
       <NuxtPage />

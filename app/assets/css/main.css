@@ -48,14 +48,14 @@
 
 @layer components {
     .nav-link {
-        @apply py-2 dark:text-gray-900 text-sm font-medium cursor-pointer 
-        transition-all duration-200 dark:hover:text-white 2xl:py-2.5 
+        @apply py-2 text-gray-900 text-sm font-medium cursor-pointer 
+        transition-all duration-200 hover:text-white 2xl:py-2.5 
         2xl:text-lg;
     }
 
     .nav-link-active {
-        @apply px-5.5 dark:bg-gray-150 dark:text-white font-semibold 
-        rounded-md transition-all duration-200 dark:hover:text-gray-900 
+        @apply px-5.5 bg-gray-150 text-white font-semibold 
+        rounded-md transition-all duration-200 hover:text-gray-900 
         2xl:px-7 2xl:rounded-lg;
     }
 }
