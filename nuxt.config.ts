@@ -45,6 +45,31 @@ export default defineNuxtConfig({
         dir: resolveAlias('./app/assets/custom-icons')
       },
     ],
+    provider: 'server',
+    serverBundle: {
+      collections: ['heroicons']
+    },
+    clientBundle: {
+      scan: {
+        globInclude: [
+          '**/*.vue',
+          '**/*.jsx',
+          '**/*.tsx',
+          '**/*.md',
+          '**/*.mdx',
+          '**/*.astro',
+          '**/*.html',
+          '**/*.ts',
+          '**/*.js'
+        ],
+        globExclude: [
+          '**/node_modules/**',
+          '**/dist/**',
+          '**/.nuxt/**',
+          '**/.output/**'
+        ]
+      }
+    }
   },
   image: {
     quality: 80,
