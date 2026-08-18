@@ -1,7 +1,7 @@
 export type AnswerPart =
   | { type: 'text', value: string }
   | { type: 'link', value: string, to: string, external?: boolean }
-  | { type: 'button', value: string, }
+  | { type: 'button', value: string }
 
 export interface IFaqItem {
   question: string
@@ -13,7 +13,7 @@ export const faqItems: IFaqItem[] = [
     question: 'Можно ли записаться на техосмотр заранее?',
     answer: [
       { type: 'text', value: 'Да, вы можете оформить предварительную запись через ' },
-      { type: 'button', value: 'сайт' },
+      { type: 'button', value: 'сайт'},
       { type: 'text', value: ' или ' },
       { type: 'link', value: 'по телефону', to: 'tel:+375447154444', external: true },
       { type: 'text', value: '. Это позволит выбрать удобное время и пройти процедуру без ожидания в очереди.' },
@@ -56,12 +56,12 @@ export const faqItems: IFaqItem[] = [
     ],
   },
   {
-    question: 'Можно ли получить консультацию перед обращением?',
+    question: 'Можно ли получить консультацию по стоимости грузоперевозки перед обращением?',
     answer: [
         {  type: 'text', value: 'Да, наши специалисты готовы проконсультировать Вас '},
         { type: 'link', value: 'по телефону', to: 'tel:+375447154444', external: true },
         {  type: 'text', value: ' или через '},
-        { type: 'button', value: 'форму на сайте' },
+        { type: 'link', value: 'форму на сайте', to: '/transportation#form' },
         {  type: 'text', value: '.'},
     ],
   },

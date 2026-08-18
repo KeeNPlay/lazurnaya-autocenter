@@ -9,6 +9,8 @@ interface IProps {
 
 defineProps<IProps>()
 
+const { openModal } = useBookingModal()
+
 </script>
 
 <template>
@@ -37,7 +39,7 @@ defineProps<IProps>()
                     >
                     {{ part.value }}
                 </NuxtLink>
-                <button v-else-if="part.type === 'button'" type="button" class="text-orange-700 underline hover:text-orange-800 transition-colors cursor-pointer">
+                <button v-else-if="part.type === 'button'" type="button" @click="openModal" class="text-orange-700 underline hover:text-orange-800 transition-colors cursor-pointer">
                     {{ part.value }}
                 </button>
                 <template v-else>{{ part.value }}</template>

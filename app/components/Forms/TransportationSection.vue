@@ -1,5 +1,5 @@
 <template>
-  <section class="flex flex-col mx-4 lg:mx-0" aria-label="Форма расчёта грузоперевозки">
+  <section class="flex flex-col mx-4 lg:mx-0" aria-label="Форма расчёта грузоперевозки" id="form">
     <BaseFormHeader
       logo="/images/logo.png"
       title="Автоцентр на Лазурной"

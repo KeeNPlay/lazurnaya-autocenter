@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const isDesktop = useMediaQuery('(min-width: 80rem)')
+const { openModal } = useBookingModal()
 </script>
 
 <template>
@@ -52,7 +53,7 @@ const isDesktop = useMediaQuery('(min-width: 80rem)')
                     Галерея
                 </BaseButton>
                 <BaseButton
-
+                    @click="openModal"
                 >
                     Записаться
                 </BaseButton>
