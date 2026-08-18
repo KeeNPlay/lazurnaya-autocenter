@@ -9,10 +9,17 @@ const emit = defineEmits<{
 }>()
 
 const route = useRoute()
+const lenis = useLenis()
 
 watchEffect((): void => {
   if (import.meta.client) {
     document.body.style.overflow = props.isOpen ? 'hidden' : ''
+  }
+
+  if (props.isOpen) {
+    lenis?.stop()
+  } else {
+    lenis?.start()
   }
 })
 
@@ -24,7 +31,10 @@ onMounted((): void => {
   }
 
   window.addEventListener('keydown', onEsc)
-  onUnmounted((): void => window.removeEventListener('keydown', onEsc))
+  onUnmounted((): void => {
+    window.removeEventListener('keydown', onEsc)
+    lenis?.start()
+  })
 })
 
 watch(route, (): void => emit('close'))
