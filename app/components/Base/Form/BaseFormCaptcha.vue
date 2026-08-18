@@ -1,13 +1,5 @@
 <script setup lang="ts">
-const widgetSize = ref('normal')
-
-onMounted(() => {
-  if (window.innerWidth < 440) {
-    widgetSize.value = 'compact'
-  } else {
-    widgetSize.value = 'flexible'
-  }
-})
+import { useWindowSize } from '@vueuse/core'
 
 interface Props {
   modelValue: string | undefined
@@ -15,10 +7,33 @@ interface Props {
 
 defineProps<Props>()
 defineEmits<{ 'update:modelValue': [value: string | undefined] }>()
+
+type WidgetSize = 'normal' | 'compact' | 'flexible'
+
+const isReady = ref<boolean>(false)
+const widgetSize = ref<WidgetSize>('flexible')
+
+const { width } = useWindowSize()
+
+const widgetKey = computed((): string => `turnstile-${widgetSize.value}`)
+
+watch(
+  width,
+  (newWidth): void => {
+    widgetSize.value = newWidth < 440 ? 'compact' : 'flexible'
+  },
+  { immediate: true }
+)
+
+onMounted((): void => {
+  isReady.value = true
+})
 </script>
 
 <template>
   <NuxtTurnstile
+    v-if="isReady"
+    :key="widgetKey"
     class="w-full"
     theme="dark"
     :data-size="widgetSize"
