@@ -23,12 +23,28 @@ const isDragging = ref<boolean>(false)
 const dragStartX = ref<number>(0)
 const dragOffset = ref<number>(0)
 
+const isMounted = ref<boolean>(false)
+
 const { width: windowWidth } = useWindowSize()
 
+const cardWidthClasses: Record<VisibleCount, string> = {
+  1: 'w-full',
+  2: 'w-full md:w-1/2',
+  3: 'w-full md:w-1/2 xl:w-1/3',
+  4: 'w-full md:w-1/2 xl:w-1/4'
+}
+
+const computedCardWidthClass = computed((): string => {
+  return cardWidthClasses[props.visibleCount]
+})
+
 const computedVisibleCount = computed((): number => {
+  if (!isMounted.value) return 1
+
   let count = 1
   if (windowWidth.value >= 1280) count = props.visibleCount
   else if (windowWidth.value >= 768) count = 2
+
   return Math.max(1, count)
 })
 
@@ -36,7 +52,10 @@ const isSlideVisible = (index: number): boolean => {
   return index >= currentIndex.value && index < currentIndex.value + computedVisibleCount.value
 }
 
-const computedMaxIndex = computed((): number => Math.max(0, props.items.length - computedVisibleCount.value))
+const computedMaxIndex = computed((): number => {
+  return Math.max(0, props.items.length - computedVisibleCount.value)
+})
+
 const computedCardWidth = computed((): number => 100 / computedVisibleCount.value)
 
 const computedTranslateX = computed((): string => {
@@ -50,8 +69,13 @@ function goTo(index: number): void {
   currentIndex.value = Math.max(0, Math.min(index, computedMaxIndex.value))
 }
 
-function prev(): void { goTo(currentIndex.value - 1) }
-function next(): void { goTo(currentIndex.value + 1) }
+function prev(): void {
+  goTo(currentIndex.value - 1)
+}
+
+function next(): void {
+  goTo(currentIndex.value + 1)
+}
 
 const canPrev = computed((): boolean => currentIndex.value > 0)
 const canNext = computed((): boolean => currentIndex.value < computedMaxIndex.value)
@@ -103,6 +127,7 @@ function handleDragEnd(): void {
 }
 
 onMounted((): void => {
+  isMounted.value = true
   window.addEventListener('mouseup', onMouseUp)
   window.addEventListener('mousemove', onMouseMove, { passive: true })
 })
@@ -118,18 +143,39 @@ watch(computedMaxIndex, (max: number): void => {
 </script>
 
 <template v-if="items.length > 0">
-  <section class="relative w-full overflow-hidden select-none border border-gray-150" :aria-label="ariaLabel" aria-roledescription="карусель">
-    <button class="absolute z-10 h-full px-2 2xl:px-5.5 bg-linear-to-r from-gray-500/0 to-gray-500/0 text-gray-300 transition-all duration-200" :class="canPrev ? 'opacity-100 hover:from-gray-500/10 hover:text-gray-500 cursor-pointer' : 'opacity-20'" :disabled="!canPrev" aria-label="Предыдущий" @click="prev">
+  <section
+    class="relative w-full overflow-hidden select-none border border-gray-150"
+    :aria-label="ariaLabel"
+    aria-roledescription="карусель"
+  >
+    <button
+      class="absolute z-10 h-full px-2 2xl:px-5.5 bg-linear-to-r from-gray-500/0 to-gray-500/0 text-gray-300 transition-all duration-200"
+      :class="canPrev ? 'opacity-100 hover:from-gray-500/10 hover:text-gray-500 cursor-pointer' : 'opacity-20'"
+      :disabled="!canPrev"
+      aria-label="Предыдущий"
+      @click="prev"
+    >
       <Icon name="heroicons:chevron-left-solid" class="text-[1.25rem]" aria-hidden="true" />
     </button>
-    <button class="absolute right-0 z-10 h-full px-2 2xl:px-5.5 bg-linear-to-l from-gray-500/0 to-gray-500/0 text-gray-300 transition-all duration-200" :class="canNext ? 'opacity-100 hover:from-gray-500/10 hover:text-gray-600 cursor-pointer' : 'opacity-20'" :disabled="!canNext" aria-label="Следующий" @click="next">
+
+    <button
+      class="absolute right-0 z-10 h-full px-2 2xl:px-5.5 bg-linear-to-l from-gray-500/0 to-gray-500/0 text-gray-300 transition-all duration-200"
+      :class="canNext ? 'opacity-100 hover:from-gray-500/10 hover:text-gray-600 cursor-pointer' : 'opacity-20'"
+      :disabled="!canNext"
+      aria-label="Следующий"
+      @click="next"
+    >
       <Icon name="heroicons:chevron-right-solid" class="text-[1.25rem]" aria-hidden="true" />
     </button>
 
     <div
       class="flex divide-x divide-gray-150 touch-action-none"
       aria-live="polite"
-      :style="{ transform: computedTranslateX, transition: isDragging ? 'none' : 'transform 0.4s ease', cursor: isDragging ? 'grabbing' : 'grab' }"
+      :style="{
+        transform: computedTranslateX,
+        transition: isDragging ? 'none' : 'transform 0.4s ease',
+        cursor: isDragging ? 'grabbing' : 'grab'
+      }"
       @mousedown="onMouseDown"
       @touchstart="onTouchStart"
       @touchmove="onTouchMove"
@@ -140,7 +186,7 @@ watch(computedMaxIndex, (max: number): void => {
         v-for="(item, index) in items"
         :key="index"
         class="shrink-0 px-4"
-        :style="{ width: `${computedCardWidth}%` }"
+        :class="computedCardWidthClass"
         role="group"
         aria-roledescription="слайд"
         :aria-label="`Слайд ${index + 1} из ${items.length}`"
