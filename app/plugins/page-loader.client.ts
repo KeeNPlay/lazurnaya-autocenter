@@ -23,8 +23,8 @@ export default defineNuxtPlugin(() => {
       stopLoading()
     }, MIN_DISPLAY_MS)
   })
-
-  useNuxtApp().hook('app:mounted', () => {
+  
+  onNuxtReady(() => {
     stopLoading()
     markMounted()
   })
