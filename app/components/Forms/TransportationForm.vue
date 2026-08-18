@@ -82,16 +82,16 @@ async function onSubmit(): Promise<void> {
       </div>
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-7.5 2xl:gap-10">
         <BaseFormField label="Длина, см">
-          <BaseFormInput v-model="form.dimensions.length" type="number" placeholder="13000" step="100" />
+          <BaseFormInput v-model="form.dimensions.length" type="number" placeholder="13000" step="100" min="0" />
         </BaseFormField>
         <BaseFormField label="Ширина, см">
-          <BaseFormInput v-model="form.dimensions.width" type="number" placeholder="3000" step="100" />
+          <BaseFormInput v-model="form.dimensions.width" type="number" placeholder="3000" step="100" min="0" />
         </BaseFormField>
         <BaseFormField label="Высота, см">
-          <BaseFormInput v-model="form.dimensions.height" type="number" placeholder="3000" step="100" />
+          <BaseFormInput v-model="form.dimensions.height" type="number" placeholder="3000" step="100" min="0" />
         </BaseFormField>
         <BaseFormField label="Общий вес, кг">
-          <BaseFormInput v-model="form.dimensions.weight" type="number" placeholder="18000" step="100" />
+          <BaseFormInput v-model="form.dimensions.weight" type="number" placeholder="18000" step="100" min="0" />
         </BaseFormField>
       </div>
     </div>
