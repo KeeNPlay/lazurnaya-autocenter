@@ -44,7 +44,7 @@ const classes = computed(() => {
 <template>
     <div class="flex items-center">
         <div :class="classes">
-            <Icon name="custom-icons:app-logo" class="text-black"/>
+            <Icon name="custom-icons:app-logo" class="text-gray-100"/>
         </div>
         <span v-if="$slots.default" class="text-sm ml-1.75 font-bold 2xl:text-lg 2xl:ml-3"><slot /></span>
     </div>

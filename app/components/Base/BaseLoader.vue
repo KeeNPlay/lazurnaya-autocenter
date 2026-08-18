@@ -20,7 +20,7 @@ const { headerHeight } = useHeaderHeight()
     aria-live="polite"
     aria-label="Загрузка"
   >
-    <Icon name="custom-icons:app-logo" class="logo-shimmer text-6xl text-white" aria-hidden="true" />
+    <Icon name="custom-icons:app-logo-filled" class="logo-shimmer text-6xl md:text-8xl 2xl:text-9xl" aria-hidden="true" />
     <span class="sr-only">Загрузка...</span>
   </div>
 
@@ -32,7 +32,7 @@ const { headerHeight } = useHeaderHeight()
     aria-live="polite"
     aria-label="Загрузка"
   >
-    <Icon name="custom-icons:app-logo" class="logo-shimmer text-6xl text-white" aria-hidden="true"/>
+    <Icon name="custom-icons:app-logo-filled" class="logo-shimmer text-6xl md:text-8xl 2xl:text-9xl" aria-hidden="true"/>
     <span class="sr-only">Загрузка...</span>
   </div>
 </template>
