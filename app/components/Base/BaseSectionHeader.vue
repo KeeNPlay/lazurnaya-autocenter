@@ -35,7 +35,7 @@ const props = withDefaults(defineProps<IProps>(), {
             <h2 class="text-2xl md:text-4xl 2xl:text-5xl font-semibold dark:text-white">
                 {{ title }}
             </h2>
-            <p class="text-sm md:text-base 2xl:text-lg font-light dark:text-gray-900 tracking-tight">
+            <p class="text-sm md:text-base 2xl:text-lg font-light dark:text-gray-900">
                 {{ description }}
             </p>
          </div>

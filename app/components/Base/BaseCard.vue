@@ -37,7 +37,7 @@ const orientations: Record<Orientation, string> = {
                     {{ title }}
                 </h3>
             </div>
-            <p v-if="description" class="text-sm lg:text-base 2xl:text-lg text-gray-900 font-light tracking-tight">
+            <p v-if="description" class="text-sm lg:text-base 2xl:text-lg text-gray-900 font-light">
                 {{ description }}
             </p>
         </div>
