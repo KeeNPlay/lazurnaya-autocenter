@@ -146,6 +146,7 @@ onUnmounted(() => {
       <ul
         v-if="isOpen"
         role="listbox"
+        data-lenis-prevent
         class="absolute left-0 top-[calc(100%+4px)] z-40 w-full max-h-60 overflow-y-auto rounded-md border border-gray-150 bg-gray-150 shadow-lg
                scrollbar-thin scrollbar-track-gray-150 scrollbar-thumb-gray-400 hover:scrollbar-thumb-gray-500"
       >
