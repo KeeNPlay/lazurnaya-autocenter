@@ -11,6 +11,17 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     '@nuxtjs/turnstile',
   ],
+
+  app: {
+    head: {
+      title: 'Автоцентр на Лазурной',
+      htmlAttrs: {
+        lang: 'ru',
+      },
+
+    },
+  },
+
   css: [
     './assets/css/main.css',
   ],
@@ -23,11 +34,6 @@ export default defineNuxtConfig({
     transpile: ['@vuepic/vue-datepicker'],
   },
 
-  app: {
-    head: {
-      title: 'Автоцентр на Лазурной',
-    },
-  },
   googleFonts: {
     display: 'swap',
     families: {
@@ -37,6 +43,7 @@ export default defineNuxtConfig({
       }
     },
   },
+
   icon: {
     mode: 'svg',
     customCollections: [
@@ -71,13 +78,16 @@ export default defineNuxtConfig({
       }
     }
   },
+
   image: {
     quality: 80,
     format: ['webp'],
   },
+
   turnstile: {
     siteKey: process.env.NUXT_TURNSTILE_SITE_KEY,
   },
+  
   runtimeConfig: {
     turnstile: {
       secretKey: process.env.NUXT_TURNSTILE_SECRET_KEY,
