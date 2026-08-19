@@ -74,7 +74,7 @@ const formatDisplay = (date: Date): string => {
 
 <style>
 .dp--theme-dark {
-  --dp-background-color: var(--color-gray-150/50);
+  --dp-background-color: var(--color-gray-150);
   --dp-text-color: var(--color-white);
   --dp-hover-color: var(--color-orange-500);
   --dp-hover-text-color: var(--color-white);
