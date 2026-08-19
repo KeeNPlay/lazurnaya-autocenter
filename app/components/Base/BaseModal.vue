@@ -52,7 +52,6 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <Teleport to="body">
     <Transition name="modal-fade">
       <div
         v-if="modelValue"
@@ -80,13 +79,12 @@ onUnmounted(() => {
         </div>
       </div>
     </Transition>
-  </Teleport>
 </template>
 
 <style scoped>
 .modal-fade-enter-active,
 .modal-fade-leave-active {
-  transition: opacity 0.2s ease;
+  transition: opacity .5s ease;
 }
 .modal-fade-enter-from,
 .modal-fade-leave-to {

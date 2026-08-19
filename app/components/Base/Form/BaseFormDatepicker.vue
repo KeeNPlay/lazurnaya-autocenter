@@ -2,6 +2,8 @@
 import { VueDatePicker } from '@vuepic/vue-datepicker'
 import { ru } from 'date-fns/locale'
 
+const lenis = useLenis()
+
 interface Props {
   modelValue: string
   id?: string
@@ -26,11 +28,12 @@ const isDateDisabled = (date: Date): boolean => {
   return day === 0 || day === 6
 }
 
-const formatDisplay = (date: Date): string => {
-  const day = String(date.getDate()).padStart(2, '0')
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const year = date.getFullYear()
-  return `${day}.${month}.${year}`
+const onOpen = (): void => {
+  lenis?.stop()
+}
+
+const onClosed = (): void => {
+  lenis?.start()
 }
 </script>
 
@@ -38,15 +41,16 @@ const formatDisplay = (date: Date): string => {
   <VueDatePicker
     :model-value="modelValue"
     model-type="dd.MM.yyyy"
-     :formats="{ input: 'dd.MM.yyyy' }"
+    :formats="{ input: 'dd.MM.yyyy' }"
     :locale="ru"
     :time-config="{ enableTimePicker: false }"
     :dark="true"
     :min-date="minDate"
     :disabled-dates="isDateDisabled"
-    teleport
-    @update:model-value="$emit('update:modelValue', $event)"
     auto-apply
+    @update:model-value="$emit('update:modelValue', $event)"
+    @open="onOpen"
+    @closed="onClosed"
   >
     <template #dp-input="{ value, onInput, onEnter, onBlur }">
       <input
@@ -99,7 +103,7 @@ const formatDisplay = (date: Date): string => {
 }
 
 .dp--menu-wrapper {
-   z-index: 40;
+   z-index: 110;
 }
 
 .dp--input-icons {
