@@ -57,6 +57,9 @@ const maxPercent = computed(() => ((maxValue.value - props.min) / (props.max - p
       <p>{{ unit }}{{ minValue }}<sup class="text-orange-700">*</sup></p>
       <p>{{ unit }}{{ maxValue }}<sup class="text-orange-700">*</sup></p>
     </div>
+    
+
+      <p class="text-gray-900 text-[0.625rem] lg:text-sm 2xl:text-lg leading-relaxed"><span class="text-orange-700 mr-1">*</span>Не является средством расчёта на территории Республики Беларусь</p>
   </div>
 </template>
 

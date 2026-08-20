@@ -37,13 +37,15 @@ const timeOptions: TimeOptions[] = [
 const vehicleTypeOptions = [
   { label: 'Легковой автомобиль', value: 'car' },
   { label: 'Грузовой автомобиль', value: 'truck' },
-  { label: 'Автопоезд', value: 'truck-trailer' },
-  { label: 'Спецтехника', value: 'truck-trailer' },
+  { label: 'Грузовой автомобиль с полуприцепом', value: 'truck-trailer' },
+  { label: 'Автобус', value: 'bus' },
+  { label: 'Спецтехника', value: 'special-machinery' },
 ]
 
 const washTypeOptions = [
-  { label: 'Комплексная мойка', value: 'complex' },
-  { label: 'Экспресс-мойка', value: 'express' },
+  { label: 'Обмыв без моющих средств', value: 'water' },
+  { label: 'Пенно-активная мойка', value: 'active-foam' },
+  { label: 'Грязевая фреза', value: 'dirt-blaster' },
 ]
 
 const isSubmitting = ref<boolean>(false)
@@ -88,11 +90,11 @@ async function onSubmit(): Promise<void> {
       <BaseFormField label="Номер телефона" required>
         <BaseFormPhoneInput v-model="form.phone" required />
       </BaseFormField>
-      <BaseFormField label="Тип автомобиля" required>
-        <BaseFormSelect v-model="form.vehicleType" :options="vehicleTypeOptions" placeholder="Автопоезд" required />
+      <BaseFormField label="Тип транспорта" required>
+        <BaseFormSelect v-model="form.vehicleType" :options="vehicleTypeOptions" placeholder="Грузовой автомобиль" required />
       </BaseFormField>
       <BaseFormField label="Тип мойки" required>
-        <BaseFormSelect v-model="form.washType" :options="washTypeOptions" placeholder="Комплексная мойка" required />
+        <BaseFormSelect v-model="form.washType" :options="washTypeOptions" placeholder="Обмыв без моющих средств" required />
       </BaseFormField>
     </div>
 

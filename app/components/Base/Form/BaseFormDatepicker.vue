@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { VueDatePicker } from '@vuepic/vue-datepicker'
 import { ru } from 'date-fns/locale'
+import { addMonths } from 'date-fns'
 
 const lenis = useLenis()
 
@@ -21,6 +22,12 @@ const minDate = computed<Date>(() => {
   const today = new Date()
   today.setHours(0, 0, 0, 0)
   return today
+})
+
+const maxDate = computed<Date>(() => {
+  const date = addMonths(new Date(), 6)
+  date.setHours(23, 59, 59, 999)
+  return date
 })
 
 const isDateDisabled = (date: Date): boolean => {
@@ -46,6 +53,7 @@ const onClosed = (): void => {
     :time-config="{ enableTimePicker: false }"
     :dark="true"
     :min-date="minDate"
+    :max-date="maxDate"
     :disabled-dates="isDateDisabled"
     auto-apply
     @update:model-value="$emit('update:modelValue', $event)"
