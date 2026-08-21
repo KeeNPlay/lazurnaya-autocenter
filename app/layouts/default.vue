@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { watch } from 'vue'
 
 const { isOpen, closeModal } = useBookingModal()
 const { isLoading, loaderVariant } = usePageLoader()

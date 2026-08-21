@@ -92,5 +92,11 @@ export default defineNuxtConfig({
     turnstile: {
       secretKey: process.env.NUXT_TURNSTILE_SECRET_KEY,
     },
-  },
+    public: {
+      // ВРЕМЕННО — удалить после подключения реального бэкенда.
+      // Использование NUXT_PUBLIC_* означает, что значения видны в клиентском бандле
+      tempAdminLogin: process.env.NUXT_PUBLIC_TEMP_ADMIN_LOGIN,
+      tempAdminPassword: process.env.NUXT_PUBLIC_TEMP_ADMIN_PASSWORD
+    }
+  }
 })
