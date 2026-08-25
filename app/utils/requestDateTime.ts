@@ -1,3 +1,5 @@
+import type { AdminRequest } from '~/types/request'
+
 export function parseRequestDateTime(date: string, time: string): number {
   const dateParts = date.split('.').map(Number)
   const timeParts = time.split(':').map(Number)
@@ -20,4 +22,11 @@ export function parseRequestDateTime(date: string, time: string): number {
   }
 
   return new Date(year, month - 1, day, hours, minutes).getTime()
+}
+
+export function getRequestTimestamp(request: AdminRequest): number {
+  if (request.type === 'transportation') {
+    return parseRequestDateTime(request.departureDate, '00:00')
+  }
+  return parseRequestDateTime(request.date, request.time)
 }

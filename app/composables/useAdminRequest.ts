@@ -1,6 +1,6 @@
 import type { AdminRequest, RequestStatus, RequestType } from '~/types/request'
 import { createMockRequests } from '~/constants/mockRequests'
-import { parseRequestDateTime } from '~/utils/requestDateTime'
+import { getRequestTimestamp } from '~/utils/requestDateTime'
 
 export function useAdminRequests(type: RequestType) {
   const activeTab = ref<RequestStatus>('active')
@@ -13,24 +13,21 @@ export function useAdminRequests(type: RequestType) {
   const allRequests = shallowRef<AdminRequest[]>(createMockRequests(type))
 
   const filteredRequests = computed<AdminRequest[]>(() => {
-  const filtered = allRequests.value.filter((request) => request.status === activeTab.value)
+    const filtered = allRequests.value.filter((request) => request.status === activeTab.value)
 
-  if (activeTab.value === 'active') {
+    if (activeTab.value === 'active') {
+      return [...filtered].sort((a, b) => getRequestTimestamp(a) - getRequestTimestamp(b))
+    }
+
+    if (activeTab.value === 'completed') {
+      return [...filtered].sort((a, b) => getRequestTimestamp(b) - getRequestTimestamp(a))
+    }
+
+    
     return [...filtered].sort(
-      (a, b) => parseRequestDateTime(a.date, a.time) - parseRequestDateTime(b.date, b.time)
+      (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
     )
-  }
-
-  if (activeTab.value === 'completed') {
-    return [...filtered].sort(
-      (a, b) => parseRequestDateTime(b.date, b.time) - parseRequestDateTime(a.date, a.time)
-    )
-  }
-
-  return [...filtered].sort(
-    (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
-  )
-})
+  })
 
   const counts = computed<Record<RequestStatus, number>>(() => ({
     active: allRequests.value.filter((r) => r.status === 'active').length,

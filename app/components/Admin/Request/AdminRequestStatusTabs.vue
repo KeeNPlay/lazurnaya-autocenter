@@ -1,11 +1,18 @@
 <script setup lang="ts">
 import type { RequestStatus } from '~/types/request'
+import { ALL_REQUEST_STATUSES } from '~/types/request'
 
 const activeTab = defineModel<RequestStatus>({ required: true })
 
-defineProps<{
-  counts: Record<RequestStatus, number>
-}>()
+const props = withDefaults(
+  defineProps<{
+    counts: Record<RequestStatus, number>
+    statuses?: readonly RequestStatus[]
+  }>(),
+  {
+    statuses: () => ALL_REQUEST_STATUSES
+  }
+)
 
 interface TabConfig {
   label: string
@@ -19,12 +26,16 @@ const tabs: readonly TabConfig[] = [
   { label: 'Завершенные', value: 'completed', icon: 'heroicons:check-circle-20-solid', iconClass: 'text-orange-500' },
   { label: 'Отмененные', value: 'cancelled', icon: 'heroicons:x-circle-20-solid', iconClass: 'text-red-500' }
 ]
+
+const visibleTabs = computed<readonly TabConfig[]>(() =>
+  tabs.filter((tab) => props.statuses.includes(tab.value))
+)
 </script>
 
 <template>
   <div class="flex flex-wrap gap-x-3 gap-y-2">
     <button
-      v-for="tab in tabs"
+      v-for="tab in visibleTabs"
       :key="tab.value"
       type="button"
       class="flex items-center gap-x-2 rounded-md px-4 py-2.5 text-sm font-medium transition-colors duration-200 cursor-pointer"

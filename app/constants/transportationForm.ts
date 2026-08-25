@@ -60,3 +60,11 @@ export const createEmptyTransportationForm = (): TransportationForm => ({
   unloadingMethods: [],
   comment: ''
 })
+
+export function getOptionLabels(values: readonly string[], options: readonly SelectOption[]): string {
+  if (values.length === 0) return '—'
+
+  return values
+    .map((value) => options.find((option) => option.value === value)?.label ?? value)
+    .join(', ')
+}

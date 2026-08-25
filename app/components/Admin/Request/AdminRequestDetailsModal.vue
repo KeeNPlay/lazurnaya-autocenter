@@ -1,20 +1,19 @@
 <script setup lang="ts">
-import { toRaw } from 'vue'
-import type { AdminRequest, CarType, RequestStatus, WashType } from '~/types/request'
+import type { RequestStatus, SchedulableRequest, CarType, WashType } from '~/types/request'
 import { CAR_TYPE_LABELS, REQUEST_STATUS_LABELS, WASH_TYPE_LABELS } from '~/types/request'
 
 const props = defineProps<{
   modelValue: boolean
-  request: AdminRequest | null
+  request: SchedulableRequest | null
 }>()
 
 const emit = defineEmits<{
   'update:modelValue': [value: boolean]
-  save: [id: number, payload: Partial<AdminRequest>]
+  save: [id: number, payload: Partial<SchedulableRequest>]
   cancel: [id: number]
 }>()
 
-const editedRequest = ref<AdminRequest | null>(null)
+const editedRequest = ref<SchedulableRequest | null>(null)
 
 watch(
   () => props.request,
@@ -96,7 +95,7 @@ const timeOptions: TimeOption[] = [
   <BaseModal :model-value="modelValue" title="Детали заявки" @update:model-value="emit('update:modelValue', $event)">
     <div
       v-if="editedRequest"
-      class="flex w-full max-w-lg flex-col gap-y-5 rounded-md bg-gray-100 p-6 lg:p-8"
+      class="flex w-full max-w-lg flex-col gap-y-5 rounded-md bg-gray-100 p-4"
     >
       <h2 class="text-xl font-medium text-white">Заявка №{{ editedRequest.id }}</h2>
 
