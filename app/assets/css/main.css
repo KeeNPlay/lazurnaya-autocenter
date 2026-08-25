@@ -58,6 +58,15 @@
         rounded-md transition-all duration-200 hover:text-gray-900 
         2xl:px-7 2xl:rounded-lg;
     }
+
+    .aside-link {
+        @apply flex items-center gap-x-2 text-white 
+        transition-colors duration-200 hover:text-orange-700;
+    }
+
+    .aside-link-active{
+        @apply text-orange-800
+    }
 }
 
 @layer vendor {

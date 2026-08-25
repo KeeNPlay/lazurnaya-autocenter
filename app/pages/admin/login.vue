@@ -3,7 +3,8 @@ import { ADMIN_HOME_PATH } from '~/constants/adminNav'
 
 definePageMeta({
   middleware: 'admin-guest',
-  layout: 'admin-login'
+  layout: 'admin-login',
+  meta: [{ name: 'robots', content: 'noindex, nofollow' }]
 })
 
 const { login } = useAdminAuth()

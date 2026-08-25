@@ -9,13 +9,12 @@ const { logout } = useAdminAuth()
 
 const { width } = useWindowSize()
 
-/**
- * Определяем "десктопный" брейкпоинт вручную, чтобы корректно
- * управлять :inert — на больших экранах сайдбар всегда статично
- * видим и должен оставаться интерактивным независимо от isOpen
- * (который актуален только для мобильного slide-in поведения).
- */
-const isLargeScreen = computed<boolean>(() => width.value >= 1024)
+const isMounted = ref<boolean>(false)
+
+const isLargeScreen = computed<boolean>(() => {
+  if (!isMounted.value) return true
+  return width.value >= 768
+})
 
 const toggleSidebar = (): void => {
   isOpen.value = !isOpen.value
@@ -45,6 +44,10 @@ watchEffect((): void => {
 
 watch(route, (): void => closeSidebar())
 
+onMounted((): void => {
+  isMounted.value = true
+})
+
 onUnmounted((): void => {
   if (import.meta.client) {
     document.body.style.overflow = ''
@@ -55,16 +58,16 @@ onUnmounted((): void => {
 
 <template>
   <div>
-    <div class="flex items-center justify-between px-2 py-4 md:px-4 md:py-8 md:hidden">
-      <BaseButton
-        variant="secondary"
-        aria-label="Открыть меню"
-        aria-haspopup="dialog"
-        :aria-expanded="isOpen"
-        @click="toggleSidebar"
-      >
-        <Icon name="heroicons:bars-3" class="text-[1.25rem] text-orange-800" />
-      </BaseButton>
+    <div class="fixed inset-x-0 top-0 z-40 flex items-center justify-between px-2 py-4 md:hidden">
+        <BaseButton
+            variant="secondary"
+            aria-label="Открыть меню"
+            aria-haspopup="dialog"
+            :aria-expanded="isOpen"
+            @click="toggleSidebar"
+        >
+            <Icon name="heroicons:bars-3" class="text-[1.25rem] text-orange-800" />
+        </BaseButton>
     </div>
 
     <aside
@@ -78,12 +81,7 @@ onUnmounted((): void => {
     >
       <div class="mb-4 flex items-center justify-between md:hidden">
         <span class="text-white font-medium">Меню</span>
-        <BaseButton
-          variant="secondary"
-          class="p-0.375"
-          aria-label="Закрыть меню"
-          @click="closeSidebar"
-        >
+        <BaseButton variant="secondary" class="p-0.375" aria-label="Закрыть меню" @click="closeSidebar">
           <Icon name="heroicons:x-mark" class="text-[1.25rem] text-orange-800" />
         </BaseButton>
       </div>
@@ -96,23 +94,35 @@ onUnmounted((): void => {
         Вернуться на сайт
       </NuxtLink>
 
+      <h3 class="text-orange-500 cursor-default">Заявки</h3>
       <NuxtLink
-        to="/admin/dashboard"
-        class="flex items-center gap-x-2 text-white transition-colors duration-200 hover:text-orange-700"
+        to="/admin/inspection"
+        class="aside-link"
+        active-class="aside-link-active"
       >
-        <Icon class="mt-0.5 text-orange-500" name="heroicons:document-duplicate-20-solid" />
-        Заявки
+        <Icon class="mt-0.5 text-orange-500" name="heroicons:identification-20-solid" />
+        Гостехосмотр
       </NuxtLink>
       <NuxtLink
-        to="/admin/transportation-calculator"
-        class="flex items-center gap-x-2 text-white transition-colors duration-200 hover:text-orange-700"
+        to="/admin/washing"
+        class="aside-link"
+        active-class="aside-link-active"
       >
-        <Icon class="mt-0.5 text-orange-500" name="heroicons:calculator-20-solid" />
+        <Icon class="mt-0.5 text-orange-500" name="heroicons:sparkles-20-solid" />
+        Мойка
+      </NuxtLink>
+      <NuxtLink
+        to="/admin/transportation"
+        class="aside-link mb-4"
+        active-class="aside-link-active"
+      >
+        <Icon class="mt-0.5 text-orange-500" name="heroicons:truck-20-solid" />
         Грузоперевозки
       </NuxtLink>
       <NuxtLink
         to="/admin/file-manager"
-        class="flex items-center gap-x-2 text-white transition-colors duration-200 hover:text-orange-700"
+        class="aside-link"
+        active-class="aside-link-active"
       >
         <Icon class="mt-0.5 text-orange-500" name="heroicons:newspaper-20-solid" />
         Управление файлами
