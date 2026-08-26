@@ -74,8 +74,8 @@ onUnmounted((): void => {
       role="navigation"
       aria-label="Навигация админ-панели"
       class="fixed inset-y-0 left-0 z-50 flex w-full flex-col gap-y-2 bg-gray-100 px-2 py-4 md:px-4 md:py-8
-             transition-transform duration-300 ease-in-out h-full
-             md:static md:z-auto md:w-64 md:shrink-0 md:translate-x-0 md:border-r md:border-gray-150"
+            transition-transform duration-300 ease-in-out h-full
+            md:sticky md:top-0 md:z-auto md:h-screen md:w-64 md:shrink-0 md:translate-x-0 md:border-r md:border-gray-150"
       :class="isOpen ? 'translate-x-0' : '-translate-x-full'"
       :inert="!isOpen && !isLargeScreen"
     >
