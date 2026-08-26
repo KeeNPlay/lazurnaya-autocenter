@@ -54,10 +54,10 @@ const columnsCount = computed<number>(() => (isWashing.value || isTransportation
             </td>
             <td class="px-4 py-3">{{ request.nameOrCompany }}</td>
             <td class="whitespace-nowrap px-4 py-3">{{ request.phone }}</td>
-            <td v-if="request.type === 'washing'" class="whitespace-nowrap px-4 py-3">
+            <td v-if="request.type === 'washing'" class="px-4 py-3">
               {{ WASH_TYPE_LABELS[request.washType] }}
             </td>
-            <td v-if="request.type === 'washing'" class="whitespace-nowrap px-4 py-3">
+            <td v-if="request.type === 'washing'" class="px-4 py-3">
               {{ CAR_TYPE_LABELS[request.carType] }}
             </td>
             <td v-if="request.type === 'transportation'" class="px-4 py-3">{{ request.fromCity }}</td>

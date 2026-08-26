@@ -57,7 +57,7 @@ function onComplete(id: number): void {
 
     <AdminRequestTable :requests="requests" :type="type" @view="openDetails" @update-status="updateStatus" />
 
-    <AdminRequestTeablePagination v-model="currentPage" :total-pages="totalPages" />
+    <AdminRequestTablePagination v-model="currentPage" :total-pages="totalPages" />
 
     <AdminRequestDetailsModal
       v-if="type !== 'transportation'"
