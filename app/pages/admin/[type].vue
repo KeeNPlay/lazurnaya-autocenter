@@ -48,7 +48,7 @@ function onComplete(id: number): void {
 </script>
 
 <template>
-  <div class="flex flex-col gap-y-6 px-2 lg:px-6">
+  <div class="flex flex-col gap-y-6 px-2 md:px-6">
     <h1 class="ml-20 md:ml-0 text-2xl font-medium text-white">
       {{ REQUEST_TYPE_LABELS[type] }}
     </h1>
