@@ -36,7 +36,7 @@ function goTo(page: number): void {
   <div v-if="totalPages > 1" class="flex items-center justify-center gap-x-1">
     <button
       type="button"
-      class="rounded-md px-3 py-2 text-sm text-gray-300 hover:bg-gray-150 transition-colors duration-200 disabled:opacity-30 cursor-pointer"
+      class="rounded-md px-3 py-2 text-sm 2xl:text-lg text-white bg-gray-150 hover:bg-gray-200 transition-colors duration-200 cursor-pointer disabled:opacity-30 disabled:cursor-default"
       :disabled="currentPage === 1"
       @click="goTo(currentPage - 1)"
     >
@@ -44,12 +44,12 @@ function goTo(page: number): void {
     </button>
 
     <template v-for="(page, index) in pages" :key="index">
-      <span v-if="page === 'ellipsis'" class="px-2 text-gray-900">...</span>
+      <span v-if="page === 'ellipsis'" class="px-2 text-white">...</span>
       <button
         v-else
         type="button"
-        class="rounded-md px-3 py-2 text-sm transition-colors duration-200 cursor-pointer"
-        :class="page === currentPage ? 'bg-orange-500 text-white' : 'text-gray-900 hover:bg-gray-150'"
+        class="rounded-md px-3 py-2 text-sm 2xl:text-lg transition-colors duration-200 cursor-pointer"
+        :class="page === currentPage ? 'bg-orange-500 text-white' : 'bg-gray-150 hover:bg-gray-200'"
         @click="goTo(page)"
       >
         {{ page }}
@@ -58,7 +58,7 @@ function goTo(page: number): void {
 
     <button
       type="button"
-      class="rounded-md px-3 py-2 text-sm text-gray-500 hover:bg-gray-150 transition-colors duration-200 disabled:opacity-30 cursor-pointer"
+      class="rounded-md px-3 py-2 text-sm 2xl:text-lg text-white bg-gray-150 hover:bg-gray-200 transition-colors duration-200 cursor-pointer disabled:opacity-30 disabled:cursor-default"
       :disabled="currentPage === totalPages"
       @click="goTo(currentPage + 1)"
     >

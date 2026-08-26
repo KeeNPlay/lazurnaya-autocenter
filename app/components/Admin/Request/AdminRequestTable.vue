@@ -23,16 +23,16 @@ const columnsCount = computed<number>(() => (isWashing.value || isTransportation
     <div class="hidden overflow-x-auto rounded-md border border-gray-150 lg:block">
       <table class="w-full text-left text-sm">
         <thead>
-          <tr class="border-b border-gray-150 bg-gray-150/30 text-gray-400">
-            <th class="px-4 py-3 font-medium">{{ isTransportation ? 'Дата отправления' : 'Дата / Время' }}</th>
-            <th class="px-4 py-3 font-medium">Клиент</th>
-            <th class="px-4 py-3 font-medium">Телефон</th>
-            <th v-if="isWashing" class="px-4 py-3 font-medium">Тип мойки</th>
-            <th v-if="isWashing" class="px-4 py-3 font-medium">Тип авто</th>
-            <th v-if="isTransportation" class="px-4 py-3 font-medium">Откуда</th>
-            <th v-if="isTransportation" class="px-4 py-3 font-medium">Куда</th>
-            <th class="px-4 py-3 font-medium">Статус</th>
-            <th class="px-4 py-3 text-right font-medium">Действия</th>
+          <tr class="bg-gray-150 text-gray-900 font-medium">
+            <th class="px-4 py-4">{{ isTransportation ? 'Дата отправления' : 'Дата / Время' }}</th>
+            <th class="px-4 py-4">Клиент</th>
+            <th class="px-4 py-4">Телефон</th>
+            <th v-if="isWashing" class="px-4 py-4">Тип мойки</th>
+            <th v-if="isWashing" class="px-4 py-4">Тип авто</th>
+            <th v-if="isTransportation" class="px-4 py-4">Откуда</th>
+            <th v-if="isTransportation" class="px-4 py-4">Куда</th>
+            <th class="px-4 py-4">Статус</th>
+            <th class="px-4 py-4 text-right">Действия</th>
           </tr>
         </thead>
         <tbody>

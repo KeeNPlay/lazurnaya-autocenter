@@ -34,17 +34,18 @@ const visibleTabs = computed<readonly TabConfig[]>(() =>
 
 <template>
   <div class="flex flex-wrap gap-x-3 gap-y-2">
-    <button
+    <BaseButton
       v-for="tab in visibleTabs"
       :key="tab.value"
-      type="button"
-      class="flex items-center gap-x-2 rounded-md px-4 py-2.5 text-sm font-medium transition-colors duration-200 cursor-pointer"
-      :class="activeTab === tab.value ? 'bg-orange-500 text-white' : 'bg-gray-150 text-gray-900 hover:bg-gray-150/70'"
+      variant="secondary"
+      :class="activeTab === tab.value ? 'bg-orange-500 hover:bg-orange-500 text-white' : 'bg-gray-150 text-gray-900 hover:bg-gray-150/70'"
       @click="activeTab = tab.value"
     >
-      <Icon :name="tab.icon" :class="activeTab === tab.value ? 'text-white' : tab.iconClass" />
+      <template #icon-left>
+        <Icon :name="tab.icon" :class="activeTab === tab.value ? 'text-white' : tab.iconClass" />
+      </template>
       {{ tab.label }}
       <span class="rounded-full bg-black/20 px-1.5 py-0.5 text-xs">{{ counts[tab.value] }}</span>
-    </button>
+    </BaseButton>
   </div>
 </template>
