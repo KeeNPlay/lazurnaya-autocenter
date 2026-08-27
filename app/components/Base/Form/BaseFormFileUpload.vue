@@ -98,6 +98,10 @@ function removeFile(): void {
   modelValue.value = null
   error.value = null
 }
+
+function onSave(): void {
+  alert('Файл загружен')
+}
 </script>
 
 <template>
@@ -131,6 +135,12 @@ function removeFile(): void {
         <Icon name="heroicons:document-check-20-solid" class="text-3xl text-orange-500" />
         <p class="max-w-full truncate text-sm font-medium text-white">{{ modelValue.name }}</p>
         <p class="text-xs text-gray-400">{{ formatFileSize(modelValue.size) }}</p>
+        <BaseButton 
+          class="text-xs lg:text-xs 2xl:text-xs"
+          @click.stop="onSave"
+        >
+          Сохранить файл
+        </BaseButton>
         <BaseButton
           variant="transparent"
           class="text-red-500 hover:text-red-400 text-xs lg:text-xs 2xl:text-xs gap-x-1 font-normal"

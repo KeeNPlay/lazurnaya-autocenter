@@ -12,10 +12,11 @@ const transportationLicence = ref<File | null>(null)
 
 <template>
   <div class="flex flex-col gap-y-6 px-2 md:px-6">
-    <section aria-label="Секция заголовка">
+    <section class="flex flex-col gap-y-4 md:gap-y-1" aria-label="Секция заголовка">
       <h1 class="ml-20 text-2xl font-medium text-white md:ml-0">
         Файловый менеджер
       </h1>
+      <p class="text-xs text-red-500 font-light">После загрузки файла необходимо проверить его отображение на сайте. Перейти на сайт можно по кнопке на меню "вернуться на сайт"</p>
     </section>
 
     <section
