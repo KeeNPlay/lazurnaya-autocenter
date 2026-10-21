@@ -7,7 +7,11 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio",
+    "seed:admin": "tsx scripts/seed-admin.ts"
   },
   "dependencies": {
     "@nuxt/icon": "^2.3.1",
@@ -19,18 +23,26 @@
     "@vuepic/vue-datepicker": "^14.0.0",
     "@vueuse/core": "^14.3.0",
     "@vueuse/nuxt": "^14.3.0",
+    "argon2": "^0.43.1",
     "date-fns": "^4.4.0",
+    "drizzle-orm": "^0.45.4",
     "lenis": "^1.3.26",
     "maska": "^3.2.0",
     "nuxt": "^4.5.0",
+    "nuxt-auth-utils": "^0.5.32",
+    "postgres": "^3.4.9",
     "tailwindcss": "^4.3.3",
     "vue": "^3.5.40",
-    "vue-router": "^5.2.0"
+    "vue-router": "^5.2.0",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@iconify-json/heroicons": "^1.2.3",
-    "@types/node": "^26.1.2",
+    "@types/node": "^26.6.5",
+    "dotenv": "^18.0.8",
+    "drizzle-kit": "^0.31.11",
     "prettier": "^3.9.6",
-    "prettier-plugin-tailwindcss": "^0.8.1"
+    "prettier-plugin-tailwindcss": "^0.8.1",
+    "tsx": "^4.23.15"
   }
 }

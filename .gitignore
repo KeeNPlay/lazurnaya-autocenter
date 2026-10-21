@@ -23,3 +23,6 @@ logs
 .env
 .env.*
 !.env.example
+
+# Docker files
+docker-compose.yml

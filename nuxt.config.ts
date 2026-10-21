@@ -10,6 +10,7 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@vueuse/nuxt',
     '@nuxtjs/turnstile',
+    'nuxt-auth-utils'
   ],
 
   app: {
@@ -92,11 +93,13 @@ export default defineNuxtConfig({
     turnstile: {
       secretKey: process.env.NUXT_TURNSTILE_SECRET_KEY,
     },
-    public: {
-      // ВРЕМЕННО — удалить после подключения реального бэкенда.
-      // Использование NUXT_PUBLIC_* означает, что значения видны в клиентском бандле
-      tempAdminLogin: process.env.NUXT_PUBLIC_TEMP_ADMIN_LOGIN,
-      tempAdminPassword: process.env.NUXT_PUBLIC_TEMP_ADMIN_PASSWORD
+    session: {
+      name: 'admin_session',
+      password: process.env.NUXT_SESSION_PASSWORD,
+      maxAge: 60 * 60 * 12, // 12 hours
+      cookie: {
+        sameSite: 'strict'
+      }
     }
   }
 })

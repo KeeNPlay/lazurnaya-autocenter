@@ -25,7 +25,7 @@ const closeSidebar = (): void => {
 }
 
 async function onLogout(): Promise<void> {
-  logout()
+  await logout()
   closeSidebar()
   await navigateTo('/admin/login')
 }
