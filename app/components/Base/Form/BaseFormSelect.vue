@@ -4,6 +4,7 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 interface Option {
   label: string
   value: string
+  disabled?: boolean
 }
 
 interface Props {
@@ -27,13 +28,31 @@ const highlightedIndex = ref<number>(-1)
 const rootRef = ref<HTMLDivElement | null>(null)
 
 const selectedOption = computed<Option | undefined>(() =>
-  props.options.find(opt => opt.value === props.modelValue)
+    props.options.find(opt => opt.value === props.modelValue)
 )
+
+const findNextEnabledIndex = (from: number, direction: 1 | -1): number => {
+  let index = from
+
+  for (let i = 0; i < props.options.length; i++) {
+    index += direction
+    if (index < 0 || index >= props.options.length) break
+    if (!props.options[index]?.disabled) return index
+  }
+
+  return from
+}
 
 const openDropdown = (): void => {
   if (props.disabled) return
   isOpen.value = true
-  highlightedIndex.value = props.options.findIndex(opt => opt.value === props.modelValue)
+
+  const currentIndex = props.options.findIndex(opt => opt.value === props.modelValue)
+  if (currentIndex !== -1 && !props.options[currentIndex]?.disabled) {
+    highlightedIndex.value = currentIndex
+  } else {
+    highlightedIndex.value = props.options.findIndex(opt => !opt.disabled)
+  }
 }
 
 const closeDropdown = (): void => {
@@ -50,6 +69,7 @@ const toggleDropdown = (): void => {
 }
 
 const selectOption = (option: Option): void => {
+  if (option.disabled) return
   emit('update:modelValue', option.value)
   closeDropdown()
 }
@@ -81,13 +101,13 @@ const handleKeydown = (event: KeyboardEvent): void => {
       if (!isOpen.value) {
         openDropdown()
       } else {
-        highlightedIndex.value = Math.min(highlightedIndex.value + 1, props.options.length - 1)
+        highlightedIndex.value = findNextEnabledIndex(highlightedIndex.value, 1)
       }
       break
     case 'ArrowUp':
       event.preventDefault()
       if (isOpen.value) {
-        highlightedIndex.value = Math.max(highlightedIndex.value - 1, 0)
+        highlightedIndex.value = findNextEnabledIndex(highlightedIndex.value, -1)
       }
       break
     case 'Escape':
@@ -108,59 +128,64 @@ onUnmounted(() => {
 <template>
   <div ref="rootRef" class="relative">
     <button
-      type="button"
-      :disabled="disabled"
-      :aria-expanded="isOpen"
-      aria-haspopup="listbox"
-      class="w-full flex items-center justify-between gap-x-2 border-b border-gray-200 pb-1.5 text-base 2xl:text-lg text-left cursor-pointer
+        type="button"
+        :disabled="disabled"
+        :aria-expanded="isOpen"
+        aria-haspopup="listbox"
+        class="w-full flex items-center justify-between gap-x-2 border-b border-gray-200 pb-1.5 text-base 2xl:text-lg text-left cursor-pointer
              focus:outline-none hover:border-orange-500 focus:border-orange-500 transition-colors duration-200
              disabled:opacity-50 disabled:cursor-not-allowed"
-      :class="selectedOption ? 'text-gray-900' : 'text-gray-400'"
-      @click="toggleDropdown"
-      @keydown="handleKeydown"
+        :class="selectedOption ? 'text-gray-900' : 'text-gray-400'"
+        @click="toggleDropdown"
+        @keydown="handleKeydown"
     >
       <span class="truncate">{{ selectedOption?.label ?? placeholder }}</span>
-      <Icon 
-        name="heroicons:chevron-down-20-solid" 
-        class="w-4 h-4 shrink-0 text-gray-400 transition-transform duration-200"
-        :class="{ 'rotate-180': isOpen }"
+      <Icon
+          name="heroicons:chevron-down-20-solid"
+          class="w-4 h-4 shrink-0 text-gray-400 transition-transform duration-200"
+          :class="{ 'rotate-180': isOpen }"
       />
     </button>
 
     <select
-      :id="id"
-      :value="modelValue"
-      :required="required"
-      tabindex="-1"
-      aria-hidden="true"
-      class="absolute left-0 top-0 h-px w-px overflow-hidden opacity-0"
-      @focus="($event.target as HTMLSelectElement).blur()"
+        :id="id"
+        :value="modelValue"
+        :required="required"
+        tabindex="-1"
+        aria-hidden="true"
+        class="absolute left-0 top-0 h-px w-px overflow-hidden opacity-0"
+        @focus="($event.target as HTMLSelectElement).blur()"
     >
       <option value="" disabled hidden />
-      <option v-for="opt in options" :key="opt.value" :value="opt.value">
+      <option v-for="opt in options" :key="opt.value" :value="opt.value" :disabled="opt.disabled">
         {{ opt.label }}
       </option>
     </select>
 
     <Transition name="select-fade">
       <ul
-        v-if="isOpen"
-        role="listbox"
-        data-lenis-prevent
-        class="absolute left-0 top-[calc(100%+4px)] z-40 w-full max-h-60 overflow-y-auto rounded-md border border-gray-150 bg-gray-150 shadow-lg
+          v-if="isOpen"
+          role="listbox"
+          data-lenis-prevent
+          class="absolute left-0 top-[calc(100%+4px)] z-40 w-full max-h-60 overflow-y-auto rounded-md border border-gray-150 bg-gray-150 shadow-lg
                scrollbar-thin scrollbar-track-gray-150 scrollbar-thumb-gray-400 hover:scrollbar-thumb-gray-500"
       >
         <li
-          v-for="(opt, index) in options"
-          :key="opt.value"
-          role="option"
-          :aria-selected="opt.value === modelValue"
-          class="px-3 py-2 text-base 2xl:text-lg cursor-pointer transition-colors duration-200"
-          :class="[
-            index === highlightedIndex ? 'bg-orange-500' : 'hover:bg-orange-500'
+            v-for="(opt, index) in options"
+            :key="opt.value"
+            role="option"
+            :aria-selected="opt.value === modelValue"
+            :aria-disabled="opt.disabled"
+            class="px-3 py-2 text-base 2xl:text-lg transition-colors duration-200"
+            :class="[
+            opt.disabled
+              ? 'text-gray-400 opacity-50 cursor-not-allowed'
+              : 'cursor-pointer',
+            index === highlightedIndex && !opt.disabled ? 'bg-orange-500' : '',
+            !opt.disabled ? 'hover:bg-orange-500' : ''
           ]"
-          @click="selectOption(opt)"
-          @mouseenter="highlightedIndex = index"
+            @click="selectOption(opt)"
+            @mouseenter="!opt.disabled && (highlightedIndex = index)"
         >
           {{ opt.label }}
         </li>

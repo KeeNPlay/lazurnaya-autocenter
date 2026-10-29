@@ -35,18 +35,23 @@ interface Props {
 const props = defineProps<Props>()
 
 const config = computed(() => variant[props.variant])
+
+const displayMessage = computed(() => {
+  if (props.message) return props.message
+  return props.variant === 'error' ? SUBMIT_ERROR_MESSAGE : SUBMIT_SUCCESS_MESSAGE
+})
 </script>
 
 <template>
-    <Transition>
-        <div
-            :role="config.role"
-            :aria-live="config.ariaLive"
-            class="px-5 py-3 2xl:px-6 2xl:py-4 flex items-center gap-x-2 text-sm 2xl:text-lg rounded-lg"
-            :class="config.bgClass"
-        >
-            <Icon :name="config.icon" class="shrink-0 text-base 2xl:text-xl" />
-            <span>{{ props.variant === 'error' ? SUBMIT_ERROR_MESSAGE : SUBMIT_SUCCESS_MESSAGE }}</span>
-        </div>
-    </Transition>
+  <Transition>
+    <div
+        :role="config.role"
+        :aria-live="config.ariaLive"
+        class="px-5 py-3 2xl:px-6 2xl:py-4 flex items-center gap-x-2 text-sm 2xl:text-lg rounded-lg"
+        :class="config.bgClass"
+    >
+      <Icon :name="config.icon" class="shrink-0 text-base 2xl:text-xl" />
+      <span class="whitespace-pre-line">{{ displayMessage }}</span>
+    </div>
+  </Transition>
 </template>

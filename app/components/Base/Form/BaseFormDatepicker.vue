@@ -10,13 +10,21 @@ interface Props {
   id?: string
   placeholder?: string
   required?: boolean
+  disabled?: boolean
+  isDateDisabledExtra?: (date: Date) => boolean
+  loading?: boolean
 }
 
-withDefaults(defineProps<Props>(), {
-  placeholder: 'дд.мм.гггг'
+const props = withDefaults(defineProps<Props>(), {
+  placeholder: 'дд.мм.гггг',
+  loading: false,
+  disabled: false
 })
 
-defineEmits<{ 'update:modelValue': [value: string | null] }>() 
+const emit = defineEmits<{
+  'update:modelValue': [value: string | null]
+  open: []
+}>()
 
 const minDate = computed<Date>(() => {
   const today = new Date()
@@ -32,11 +40,13 @@ const maxDate = computed<Date>(() => {
 
 const isDateDisabled = (date: Date): boolean => {
   const day = date.getDay()
-  return day === 0 || day === 6
+  if (day === 0 || day === 6) return true
+  return props.isDateDisabledExtra?.(date) ?? false
 }
 
 const onOpen = (): void => {
   lenis?.stop()
+  emit('open')
 }
 
 const onClosed = (): void => {
@@ -46,41 +56,50 @@ const onClosed = (): void => {
 
 <template>
   <VueDatePicker
-    :model-value="modelValue"
-    model-type="dd.MM.yyyy"
-    :formats="{ input: 'dd.MM.yyyy' }"
-    :locale="ru"
-    :time-config="{ enableTimePicker: false }"
-    :dark="true"
-    :min-date="minDate"
-    :max-date="maxDate"
-    :disabled-dates="isDateDisabled"
-    auto-apply
-    @update:model-value="$emit('update:modelValue', $event)"
-    @open="onOpen"
-    @closed="onClosed"
+      :model-value="modelValue"
+      model-type="dd.MM.yyyy"
+      :formats="{ input: 'dd.MM.yyyy' }"
+      :locale="ru"
+      :time-config="{ enableTimePicker: false }"
+      :dark="true"
+      :min-date="minDate"
+      :max-date="maxDate"
+      :disabled-dates="isDateDisabled"
+      :disabled="disabled"
+      auto-apply
+      @update:model-value="emit('update:modelValue', $event)"
+      @open="onOpen"
+      @closed="onClosed"
   >
     <template #dp-input="{ value, onInput, onEnter, onBlur }">
       <input
-        :id="id"
-        type="text"
-        :value="value"
-        :placeholder="placeholder"
-        :required="required"
-        class="w-full bg-transparent border-b border-gray-200 pb-1.5 text-gray-900 text-base 2xl:text-lg
-               placeholder:text-gray-400 focus:outline-none hover:border-orange-500 focus:border-orange-500 transition-colors duration-200"
-        @input="onInput"
-        @keydown.enter="onEnter"
-        @blur="onBlur"
+          :id="id"
+          type="text"
+          :value="value"
+          :placeholder="placeholder"
+          :required="required"
+          :disabled="disabled"
+          class="w-full bg-transparent border-b border-gray-200 pb-1.5 text-gray-900 text-base 2xl:text-lg
+               placeholder:text-gray-400 focus:outline-none hover:border-orange-500 focus:border-orange-500 transition-colors duration-200
+               disabled:opacity-50 disabled:cursor-not-allowed"
+          @input="onInput"
+          @keydown.enter="onEnter"
+          @blur="onBlur"
       >
     </template>
     <template #clear-icon="{ clear }">
-            <Icon 
-              name="heroicons:x-mark-20-solid"
-              class="w-4 h-4 shrink-0 text-gray-400 transition-all duration-200"
-              @click="clear"
-            />
-    </template> 
+      <Icon
+          v-if="!loading"
+          name="heroicons:x-mark-20-solid"
+          class="w-4 h-4 shrink-0 text-gray-400 transition-all duration-200"
+          @click="clear"
+      />
+      <Icon
+          v-else
+          name="heroicons:arrow-path-20-solid"
+          class="w-4 h-4 shrink-0 text-orange-500 animate-spin"
+      />
+    </template>
   </VueDatePicker>
 </template>
 

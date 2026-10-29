@@ -3,6 +3,8 @@ export interface SelectOption {
   value: string
 }
 
+// If anything is added to the forms, don't forget to update the values in formEnums.ts, `pgEnum` (schema.ts) and `value` (constants/transportationForm.ts, components/Forms/WashingForm.vue).
+
 export const CARGO_TYPE_OPTIONS: SelectOption[] = [
   { label: 'Тепловой режим', value: 'thermal' },
   { label: 'Без теплового режима', value: 'no-thermal' },
@@ -23,7 +25,7 @@ export const BUDGET_RANGE = {
   min: 0,
   max: 10000,
   step: 100,
-  default: [1000, 5000] as [number, number]
+  default: [0, 10000] as [number, number]
 } as const
 
 export interface TransportationDimensions {

@@ -1,5 +1,15 @@
 <script setup lang="ts">
 const { consent, captchaToken, canSubmit } = useFormConsent()
+const {
+  loading: scheduleLoading,
+  error: scheduleError,
+  load: loadSchedule,
+  getAvailableTimeOptions,
+  isDateFullyBooked,
+  markSlotAsBusy
+} = useInspectionSchedule()
+
+const captchaRef = ref<{ reset: () => void } | null>(null)
 
 const form = reactive({
   date: '',
@@ -7,69 +17,82 @@ const form = reactive({
   nameOrCompany: '',
   phone: '',
   carBrand: '',
-  plateNumber: '',
+  plateNumber: ''
 })
 
-interface TimeOptions {
-  label: string,
-  value: string,
+onMounted(() => {
+  loadSchedule()
+})
+
+async function onDatepickerOpen(): Promise<void> {
+  await loadSchedule()
 }
 
-const timeOptions: TimeOptions[] = [
-  { label: '8:30', value: '08:30:00' },
-  { label: '8:45', value: '08:45:00' },
-  { label: '9:00', value: '09:00:00' },
-  { label: '9:15', value: '09:15:00' },
-  { label: '9:30', value: '09:30:00' },
-  { label: '9:45', value: '09:45:00' },
-  { label: '10:00', value: '10:00:00'},
-  { label: '10:15', value: '10:15:00' },
-  { label: '10:30', value: '10:30:00' },
-  { label: '10:45', value: '10:45:00' },
-  { label: '11:00', value: '11:00:00'},
-  { label: '11:15', value: '11:15:00' },
-  { label: '11:30', value: '11:30:00' },
-  { label: '11:45', value: '11:45:00' },
-  { label: '12:00', value: '12:00:00'},
-  { label: '12:15', value: '12:15:00' },
-  { label: '12:30', value: '12:30:00' },
-  { label: '13:30', value: '13:30:00' },
-  { label: '13:45', value: '13:45:00' },
-  { label: '14:00', value: '14:00:00' },
-  { label: '14:15', value: '14:15:00' },
-  { label: '14:30', value: '14:30:00' },
-  { label: '14:45', value: '14:45:00' },
-  { label: '15:00', value: '15:00:00' },
-  { label: '15:15', value: '15:15:00' },
-  { label: '15:30', value: '15:30:00' },
-  { label: '15:45', value: '15:45:00' },
-  { label: '16:00', value: '16:00:00' },
-  { label: '16:15', value: '16:15:00' },
-  { label: '16:30', value: '16:30:00' },
-]
+const timeOptions = computed(() => getAvailableTimeOptions(form.date))
+
+watch(
+    () => form.date,
+    () => {
+      const currentOption = timeOptions.value.find((option) => option.value === form.time)
+      if (!currentOption || currentOption.disabled) {
+        form.time = ''
+      }
+    }
+)
 
 const isSubmitting = ref<boolean>(false)
 const submitError = ref<boolean>(false)
 const submitSuccess = ref<boolean>(false)
+const submitErrorMessage = ref<string>('')
+const successMessage = ref<string>('')
+
+function resetForm(): void {
+  form.date = ''
+  form.time = ''
+  form.nameOrCompany = ''
+  form.phone = ''
+  form.carBrand = ''
+  form.plateNumber = ''
+}
 
 async function onSubmit(): Promise<void> {
   if (!canSubmit.value) return
-  
+
   isSubmitting.value = true
   submitError.value = false
   submitSuccess.value = false
-  
+  submitErrorMessage.value = ''
+
+  const bookedDate = form.date
+  const bookedTime = form.time
+
   try {
     await $fetch('/api/forms/inspection', {
       method: 'POST',
-      body: { ...form, captchaToken: captchaToken.value },
+      body: { ...form, captchaToken: captchaToken.value }
     })
-    
+
+    markSlotAsBusy(bookedDate, bookedTime)
+
+    successMessage.value = buildBookingSuccessMessage(bookedDate, bookedTime)
     submitSuccess.value = true
+    resetForm()
   } catch (error) {
     submitError.value = true
+
+    if (isFetchErrorWithStatus(error, 409)) {
+      markSlotAsBusy(bookedDate, bookedTime)
+      form.time = ''
+    }
+
+    submitErrorMessage.value = getServerErrorMessage(
+        error,
+        'Не удалось отправить данные, попробуйте позже.'
+    )
+
     console.error('Ошибка отправки формы:', error)
   } finally {
+    captchaRef.value?.reset()
     isSubmitting.value = false
   }
 }
@@ -79,7 +102,17 @@ async function onSubmit(): Promise<void> {
   <form class="p-6 lg:p-15 2xl:p-20 flex flex-col gap-y-7.5 2xl:gap-y-10 outline-1 outline-gray-150" @submit.prevent="onSubmit">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-y-7.5 2xl:gap-y-10 gap-x-0 lg:gap-x-7.5">
       <BaseFormField label="Дата" required>
-        <BaseFormDatepicker v-model="form.date" placeholder="дд.мм.гггг" required />
+        <BaseFormDatepicker
+            v-model="form.date"
+            placeholder="дд.мм.гггг"
+            required
+            :is-date-disabled-extra="isDateFullyBooked"
+            :loading="scheduleLoading"
+            @open="onDatepickerOpen"
+        />
+        <p v-if="scheduleError" class="mt-1.5 text-xs text-gray-400">
+          {{ scheduleError }}
+        </p>
       </BaseFormField>
       <BaseFormField label="Время" required>
         <BaseFormSelect v-model="form.time" :options="timeOptions" placeholder="12:00" required />
@@ -100,10 +133,14 @@ async function onSubmit(): Promise<void> {
 
     <div class="flex flex-col p-6 lg:p-7.5 2xl:p-10 gap-y-7.5 2xl:gap-y-10 bg-gray-150/50 border border-gray-150 rounded-md 2xl:rounded-lg">
       <BaseFormConsent v-model="consent" />
-      <BaseFormCaptcha v-model="captchaToken" />
+      <BaseFormCaptcha ref="captchaRef" v-model="captchaToken" />
     </div>
 
-    <BaseFormAlert v-if="submitError || submitSuccess" :variant="submitError ? 'error' : 'success'"/>
+    <BaseFormAlert
+        v-if="submitError || submitSuccess"
+        :variant="submitError ? 'error' : 'success'"
+        :message="submitError ? submitErrorMessage : successMessage"
+    />
 
     <BaseFormSubmit :loading="isSubmitting" :disabled="!canSubmit" />
   </form>
