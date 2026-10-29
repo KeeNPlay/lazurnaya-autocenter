@@ -10,7 +10,8 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@vueuse/nuxt',
     '@nuxtjs/turnstile',
-    'nuxt-auth-utils'
+    'nuxt-auth-utils',
+    'nuxt-security',
   ],
 
   app: {
@@ -99,6 +100,30 @@ export default defineNuxtConfig({
       maxAge: 60 * 60 * 12, // 12 hours
       cookie: {
         sameSite: 'strict'
+      }
+    }
+  },
+
+  security: {
+    headers: {
+      crossOriginEmbedderPolicy: process.env.NODE_ENV === 'development' ? 'unsafe-none' : 'require-corp',
+      contentSecurityPolicy: {
+        'img-src': ["'self'", 'data:'],
+        'connect-src': ["'self'", 'https://challenges.cloudflare.com'],
+        'frame-src': ["'self'", 'https://challenges.cloudflare.com'], // Turnstile widget
+      }
+    },
+    rateLimiter: {
+      tokensPerInterval: 150,
+      interval: 300000, // 5 minutes limit
+      headers: false
+    }
+  },
+
+  routeRules: {
+    '/api/forms/**': {
+      security: {
+        rateLimiter: false,
       }
     }
   }
