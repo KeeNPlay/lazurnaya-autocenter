@@ -2,7 +2,7 @@ import { inspectionFormSchema } from '../../utils/validation/inspectionSchema'
 import { parseScheduledAt } from '../../utils/parseScheduledAt'
 import { isUniqueViolation } from '../../utils/isUniqueViolation'
 import { requests, inspectionDetails } from '../../database/schema'
-import {readValidatedBodyRu} from "../../utils/validation/readValidatedBodyRu";
+import { readValidatedBodyRu } from '../../utils/validation/readValidatedBodyRu'
 
 export default defineEventHandler(async (event) => {
 
@@ -18,11 +18,17 @@ export default defineEventHandler(async (event) => {
   // 3. Verify Captcha
   await verifyTurnstile(body.captchaToken, event)
 
-  // 4. Date/Time parsing
+  // 4. Date/Time parsing and working-hours rules
   const scheduledAt = parseScheduledAt(body.date, body.time)
 
   if (scheduledAt.getTime() < Date.now()) {
     throw createError({ statusCode: 400, statusMessage: 'Нельзя записаться на прошедшую дату' })
+  }
+  if (isMinskWeekend(scheduledAt)) {
+    throw createError({ statusCode: 400, statusMessage: 'Запись на выходные невозможна' })
+  }
+  if (!isValidInspectionTime(body.time)) {
+    throw createError({ statusCode: 400, statusMessage: 'Выбранное время недоступно для записи' })
   }
 
   // 5. Transaction: create request + details atomically

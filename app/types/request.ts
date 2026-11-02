@@ -1,8 +1,10 @@
+import { VEHICLE_TYPE_OPTIONS, WASH_TYPE_OPTIONS } from '~/constants/washingForm'
+
 export type RequestStatus = 'active' | 'completed' | 'cancelled'
 export type RequestType = 'inspection' | 'washing' | 'transportation'
 
-export type WashType = 'complex' | 'express'
-export type CarType = 'passenger' | 'truck'
+export type VehicleType = 'car' | 'truck' | 'truck-trailer' | 'bus' | 'special-machinery'
+export type WashType = 'water' | 'active-foam' | 'dirt-blaster'
 
 interface RequestCore {
   readonly id: number
@@ -15,9 +17,11 @@ interface RequestCore {
 
 export interface InspectionRequest extends RequestCore {
   readonly type: 'inspection'
+  // dd.mm.yyyy UTC+3
   date: string
+  // hh:mm UTC+3
   time: string
-  brand: string
+  carBrand: string
   plateNumber: string
 }
 
@@ -25,15 +29,16 @@ export interface WashingRequest extends RequestCore {
   readonly type: 'washing'
   date: string
   time: string
-  carType: CarType
+  durationMinutes: number
+  vehicleType: VehicleType
   washType: WashType
 }
 
 export interface TransportationDimensions {
-  length: string
-  width: string
-  height: string
-  weight: string
+  length: number | null
+  width: number | null
+  height: number | null
+  weight: number | null
 }
 
 export interface TransportationRequest extends RequestCore {
@@ -46,12 +51,49 @@ export interface TransportationRequest extends RequestCore {
   cargoTypes: string[]
   loadingMethods: string[]
   unloadingMethods: string[]
+  budgetMin: number | null
+  budgetMax: number | null
   comment: string
 }
 
 export type SchedulableRequest = InspectionRequest | WashingRequest
 
 export type AdminRequest = SchedulableRequest | TransportationRequest
+
+export interface AdminRequestsResponse {
+  items: AdminRequest[]
+  counts: Record<RequestStatus, number>
+  totalPages: number
+  page: number
+}
+
+export interface InspectionUpdatePayload {
+  date: string
+  // hh.mm.ss
+  time: string
+  nameOrCompany: string
+  // 9 number after 375
+  phone: string
+  carBrand: string
+  plateNumber: string
+}
+
+export interface WashingUpdatePayload {
+  date: string
+  time: string
+  nameOrCompany: string
+  phone: string
+  vehicleType: VehicleType
+  washType: WashType
+}
+
+export type AdminRequestUpdatePayload = InspectionUpdatePayload | WashingUpdatePayload
+
+function buildLabels<T extends string>(
+    options: readonly { label: string; value: string }[]
+): Readonly<Record<T, string>> {
+  return Object.fromEntries(options.map((option) => [option.value, option.label])) as Record<T, string>
+}
 
 export const REQUEST_TYPES: readonly RequestType[] = ['inspection', 'washing', 'transportation']
 
@@ -67,15 +109,8 @@ export const REQUEST_STATUS_LABELS: Readonly<Record<RequestStatus, string>> = {
   cancelled: 'Отменена'
 }
 
-export const WASH_TYPE_LABELS: Readonly<Record<WashType, string>> = {
-  complex: 'Комплексная мойка',
-  express: 'Экспресс-мойка'
-}
-
-export const CAR_TYPE_LABELS: Readonly<Record<CarType, string>> = {
-  passenger: 'Легковой автомобиль',
-  truck: 'Грузовой автомобиль'
-}
+export const VEHICLE_TYPE_LABELS = buildLabels<VehicleType>(VEHICLE_TYPE_OPTIONS)
+export const WASH_TYPE_LABELS = buildLabels<WashType>(WASH_TYPE_OPTIONS)
 
 export const ALL_REQUEST_STATUSES: readonly RequestStatus[] = ['active', 'completed', 'cancelled']
 export const TRANSPORTATION_REQUEST_STATUSES: readonly RequestStatus[] = ['active', 'completed']

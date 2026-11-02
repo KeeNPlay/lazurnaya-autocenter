@@ -1,62 +1,124 @@
-import type { AdminRequest, RequestStatus, RequestType } from '~/types/request'
-import { createMockRequests } from '~/constants/mockRequests'
-import { getRequestTimestamp } from '~/utils/requestDateTime'
+import type {
+  AdminRequest,
+  AdminRequestsResponse,
+  AdminRequestUpdatePayload,
+  RequestStatus,
+  RequestType
+} from '~/types/request'
+
+const EMPTY_COUNTS: Readonly<Record<RequestStatus, number>> = { active: 0, completed: 0, cancelled: 0 }
 
 export function useAdminRequests(type: RequestType) {
-  const activeTab = ref<RequestStatus>('active')
-  const currentPage = ref<number>(1)
-  const pageSize = 10 as const
+  const { notify } = useAdminNotifications()
 
-  /**
-   * TODO(backend): заменить на useFetch('/api/admin/requests', { query: { type } })
-   */
-  const allRequests = shallowRef<AdminRequest[]>(createMockRequests(type))
+  const status = ref<RequestStatus>('active')
+  const page = ref<number>(1)
 
-  const filteredRequests = computed<AdminRequest[]>(() => {
-    const filtered = allRequests.value.filter((request) => request.status === activeTab.value)
-
-    if (activeTab.value === 'active') {
-      return [...filtered].sort((a, b) => getRequestTimestamp(a) - getRequestTimestamp(b))
+  // Смена вкладки и сброс страницы — одно изменение, поэтому уходит один запрос
+  const activeTab = computed<RequestStatus>({
+    get: () => status.value,
+    set: (value) => {
+      if (value === status.value) return
+      status.value = value
+      page.value = 1
     }
-
-    if (activeTab.value === 'completed') {
-      return [...filtered].sort((a, b) => getRequestTimestamp(b) - getRequestTimestamp(a))
-    }
-
-    
-    return [...filtered].sort(
-      (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
-    )
   })
 
-  const counts = computed<Record<RequestStatus, number>>(() => ({
-    active: allRequests.value.filter((r) => r.status === 'active').length,
-    completed: allRequests.value.filter((r) => r.status === 'completed').length,
-    cancelled: allRequests.value.filter((r) => r.status === 'cancelled').length
-  }))
+  const currentPage = computed<number>({
+    get: () => page.value,
+    set: (value) => {
+      page.value = value
+    }
+  })
 
-  const totalPages = computed<number>(() =>
-    Math.max(1, Math.ceil(filteredRequests.value.length / pageSize))
+  const query = computed(() => ({ type, status: status.value, page: page.value }))
+
+  const { data, pending, error, refresh } = useFetch<AdminRequestsResponse>('/api/admin/requests', {
+    key: `admin-requests:${type}`,
+    query
+  })
+
+  // Хранит последний успешный ответ, чтобы счётчики и таблица не мигали при переключении
+  const lastResponse = shallowRef<AdminRequestsResponse | null>(null)
+  watch(
+      data,
+      (value): void => {
+        if (value) lastResponse.value = value
+      },
+      { immediate: true }
   )
 
-  const paginatedRequests = computed<AdminRequest[]>(() => {
-    const start = (currentPage.value - 1) * pageSize
-    return filteredRequests.value.slice(start, start + pageSize)
+  const response = computed<AdminRequestsResponse | null>(() => data.value ?? lastResponse.value)
+
+  // Сервер мог сжать номер страницы (например, после отмены последней заявки на странице)
+  watch(response, (value): void => {
+    if (value && value.page !== page.value) page.value = value.page
   })
 
-  watch(activeTab, (): void => {
-    currentPage.value = 1
+  watch(error, async (err): Promise<void> => {
+    if (!err) return
+
+    if (isFetchErrorWithStatus(err, 401)) {
+      await navigateTo('/admin/login')
+      return
+    }
+
+    notify('error', getServerErrorMessage(err, 'Не удалось загрузить заявки. Попробуйте обновить список.'))
   })
 
-  function updateStatus(id: number, status: RequestStatus): void {
-    const updatedAt = new Date().toISOString()
-    allRequests.value = allRequests.value.map((r) => (r.id === id ? { ...r, status, updatedAt } : r))
+  const requests = computed<AdminRequest[]>(() => response.value?.items ?? [])
+  const counts = computed<Record<RequestStatus, number>>(() => response.value?.counts ?? { ...EMPTY_COUNTS })
+  const totalPages = computed<number>(() => response.value?.totalPages ?? 1)
+
+  const isMutating = ref<boolean>(false)
+
+  async function reload(): Promise<void> {
+    await refresh()
   }
 
-  function updateRequest(id: number, payload: Partial<AdminRequest>): void {
-    const updatedAt = new Date().toISOString()
-    allRequests.value = allRequests.value.map((r) =>
-      r.id === id ? ({ ...r, ...payload, updatedAt } as AdminRequest) : r
+  async function mutate(
+      action: () => Promise<unknown>,
+      successMessage: string,
+      fallbackError: string
+  ): Promise<boolean> {
+    if (isMutating.value) return false
+    isMutating.value = true
+
+    try {
+      await action()
+      notify('success', successMessage)
+      await refresh()
+      return true
+    } catch (err) {
+      if (isFetchErrorWithStatus(err, 401)) {
+        await navigateTo('/admin/login')
+        return false
+      }
+
+      notify('error', getServerErrorMessage(err, fallbackError))
+
+      if (isFetchErrorWithStatus(err, 409) || isFetchErrorWithStatus(err, 404)) {
+        await refresh()
+      }
+      return false
+    } finally {
+      isMutating.value = false
+    }
+  }
+
+  function updateStatus(id: number, nextStatus: RequestStatus): Promise<boolean> {
+    return mutate(
+        () => $fetch(`/api/admin/requests/${id}/status`, { method: 'PATCH', body: { status: nextStatus } }),
+        nextStatus === 'cancelled' ? `Заявка №${id} отменена` : `Заявка №${id} завершена`,
+        'Не удалось изменить статус заявки'
+    )
+  }
+
+  function updateRequest(id: number, payload: AdminRequestUpdatePayload): Promise<boolean> {
+    return mutate(
+        () => $fetch(`/api/admin/requests/${id}`, { method: 'PATCH', body: payload }),
+        `Изменения по заявке №${id} сохранены`,
+        'Не удалось сохранить изменения'
     )
   }
 
@@ -65,7 +127,10 @@ export function useAdminRequests(type: RequestType) {
     currentPage,
     totalPages,
     counts,
-    requests: paginatedRequests,
+    requests,
+    pending,
+    isMutating,
+    reload,
     updateStatus,
     updateRequest
   }

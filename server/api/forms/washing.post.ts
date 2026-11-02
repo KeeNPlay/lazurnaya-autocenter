@@ -24,6 +24,12 @@ export default defineEventHandler(async (event) => {
   if (scheduledAt.getTime() < Date.now()) {
     throw createError({ statusCode: 400, statusMessage: 'Нельзя записаться на прошедшую дату' })
   }
+  if (isMinskWeekend(scheduledAt)) {
+    throw createError({ statusCode: 400, statusMessage: 'Запись на выходные невозможна' })
+  }
+  if (!isValidWashingStartTime(body.time)) {
+    throw createError({ statusCode: 400, statusMessage: 'Выбранное время недоступно для записи' })
+  }
 
   // 5. Duration lookup
   const durationMinutes = getWashingDurationMinutes(body.washType, body.vehicleType)

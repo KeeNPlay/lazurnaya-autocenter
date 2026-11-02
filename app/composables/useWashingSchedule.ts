@@ -1,9 +1,17 @@
 import { WASHING_TIME_SLOTS } from '~/constants/washingForm'
-import { toMinskParts, ddmmyyyyToIsoKey, isoKeyToDdMmYyyy, dateToIsoKey, getMinskNowParts, isPastMinskTime } from '~/utils/minskTime'
+import { toMinskParts, ddmmyyyyToIsoKey, isoKeyToDdMmYyyy, dateToIsoKey, isPastMinskTime } from '~/utils/minskTime'
 
 interface BusyInterval {
     startMinutes: number
     endMinutes: number
+}
+
+interface IgnoredSlot {
+    // dd.mm.yyyy
+    date: string
+    // hh:mm:ss
+    time: string
+    durationMinutes: number
 }
 
 const state = reactive({
@@ -12,6 +20,24 @@ const state = reactive({
 })
 const loading = ref(false)
 const error = ref<string | null>(null)
+
+function getBusyIntervals(isoKey: string, ignoreSlot?: IgnoredSlot): BusyInterval[] {
+    const intervals = state.busyByDate.get(isoKey) ?? []
+
+    if (!ignoreSlot || ddmmyyyyToIsoKey(ignoreSlot.date) !== isoKey) return intervals
+
+    const ignoredStart = timeStrToMinutes(ignoreSlot.time)
+    const ignoredEnd = ignoredStart + ignoreSlot.durationMinutes
+    let skipped = false
+
+    return intervals.filter((interval) => {
+        if (!skipped && interval.startMinutes === ignoredStart && interval.endMinutes === ignoredEnd) {
+            skipped = true
+            return false
+        }
+        return true
+    })
+}
 
 export function useWashingSchedule() {
     async function load(force = false): Promise<void> {
@@ -37,14 +63,14 @@ export function useWashingSchedule() {
         }
     }
 
-    function getAvailableTimeOptions(ddmmyyyy: string, washType: string, vehicleType: string) {
+    function getAvailableTimeOptions(ddmmyyyy: string, washType: string, vehicleType: string, ignoreSlot?: IgnoredSlot) {
         const durationMinutes = getWashingDurationMinutes(washType, vehicleType)
         if (!durationMinutes || !ddmmyyyy) {
             return WASHING_TIME_SLOTS.map((slot) => ({ ...slot, disabled: true }))
         }
 
         const isoKey = ddmmyyyyToIsoKey(ddmmyyyy)
-        const busyIntervals = state.busyByDate.get(isoKey) ?? []
+        const busyIntervals = getBusyIntervals(isoKey, ignoreSlot)
         const closingMinutes = timeStrToMinutes(WASHING_CLOSING_TIME)
 
         return WASHING_TIME_SLOTS.map((slot) => {
@@ -59,9 +85,9 @@ export function useWashingSchedule() {
         })
     }
 
-    function isDateFullyBooked(date: Date, washType: string, vehicleType: string): boolean {
+    function isDateFullyBooked(date: Date, washType: string, vehicleType: string, ignoreSlot?: IgnoredSlot): boolean {
         const isoKey = dateToIsoKey(date)
-        const options = getAvailableTimeOptions(isoKeyToDdMmYyyy(isoKey), washType, vehicleType)
+        const options = getAvailableTimeOptions(isoKeyToDdMmYyyy(isoKey), washType, vehicleType, ignoreSlot)
         return options.every((option) => option.disabled)
     }
 

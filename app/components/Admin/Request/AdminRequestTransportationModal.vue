@@ -2,10 +2,14 @@
 import type { TransportationRequest } from '~/types/request'
 import { CARGO_TYPE_OPTIONS, LOADING_METHOD_OPTIONS, getOptionLabels } from '~/constants/transportationForm'
 
-const props = defineProps<{
-  modelValue: boolean
-  request: TransportationRequest | null
-}>()
+const props = withDefaults(
+    defineProps<{
+      modelValue: boolean
+      request: TransportationRequest | null
+      saving?: boolean
+    }>(),
+    { saving: false }
+)
 
 const emit = defineEmits<{
   'update:modelValue': [value: boolean]
@@ -13,21 +17,28 @@ const emit = defineEmits<{
 }>()
 
 const cargoTypesLabel = computed<string>(() =>
-  props.request ? getOptionLabels(props.request.cargoTypes, CARGO_TYPE_OPTIONS) : '—'
+    props.request ? getOptionLabels(props.request.cargoTypes, CARGO_TYPE_OPTIONS) : '—'
 )
 
 const loadingMethodsLabel = computed<string>(() =>
-  props.request ? getOptionLabels(props.request.loadingMethods, LOADING_METHOD_OPTIONS) : '—'
+    props.request ? getOptionLabels(props.request.loadingMethods, LOADING_METHOD_OPTIONS) : '—'
 )
 
 const unloadingMethodsLabel = computed<string>(() =>
-  props.request ? getOptionLabels(props.request.unloadingMethods, LOADING_METHOD_OPTIONS) : '—'
+    props.request ? getOptionLabels(props.request.unloadingMethods, LOADING_METHOD_OPTIONS) : '—'
 )
 
+const budgetLabel = computed<string>(() => {
+  const request = props.request
+  if (!request || (request.budgetMin === null && request.budgetMax === null)) return '—'
+
+  const format = (value: number | null): string => (value === null ? '—' : value.toLocaleString('ru-RU'))
+  return `${format(request.budgetMin)} – ${format(request.budgetMax)}`
+})
+
 function onComplete(): void {
-  if (!props.request) return
+  if (!props.request || props.saving) return
   emit('complete', props.request.id)
-  emit('update:modelValue', false)
 }
 </script>
 
@@ -46,7 +57,7 @@ function onComplete(): void {
         </div>
         <div class="flex justify-between gap-x-3">
           <dt class="text-gray-400">Телефон</dt>
-          <dd class="text-right text-white">{{ request.phone }}</dd>
+          <dd class="text-right text-white">{{ formatPhone(request.phone) }}</dd>
         </div>
         <div class="flex justify-between gap-x-3">
           <dt class="text-gray-400">Город отправления</dt>
@@ -71,19 +82,19 @@ function onComplete(): void {
         <dl class="grid grid-cols-2 gap-3 text-sm">
           <div class="flex justify-between gap-x-3">
             <dt class="text-gray-400">Длина, см</dt>
-            <dd class="text-white">{{ request.dimensions.length || '—' }}</dd>
+            <dd class="text-white">{{ request.dimensions.length ?? '—' }}</dd>
           </div>
           <div class="flex justify-between gap-x-3">
             <dt class="text-gray-400">Ширина, см</dt>
-            <dd class="text-white">{{ request.dimensions.width || '—' }}</dd>
+            <dd class="text-white">{{ request.dimensions.width ?? '—' }}</dd>
           </div>
           <div class="flex justify-between gap-x-3">
             <dt class="text-gray-400">Высота, см</dt>
-            <dd class="text-white">{{ request.dimensions.height || '—' }}</dd>
+            <dd class="text-white">{{ request.dimensions.height ?? '—' }}</dd>
           </div>
           <div class="flex justify-between gap-x-3">
             <dt class="text-gray-400">Вес, кг</dt>
-            <dd class="text-white">{{ request.dimensions.weight || '—' }}</dd>
+            <dd class="text-white">{{ request.dimensions.weight ?? '—' }}</dd>
           </div>
         </dl>
       </div>
@@ -101,6 +112,10 @@ function onComplete(): void {
           <dt class="text-gray-400">Способ разгрузки</dt>
           <dd class="text-right text-white">{{ unloadingMethodsLabel }}</dd>
         </div>
+        <div class="flex justify-between gap-x-3">
+          <dt class="text-gray-400">Бюджет</dt>
+          <dd class="text-right text-white">{{ budgetLabel }} $</dd>
+        </div>
       </dl>
 
       <div v-if="request.comment" class="flex flex-col gap-y-2 border-t border-gray-150 pt-4">
@@ -110,14 +125,15 @@ function onComplete(): void {
 
       <div class="flex justify-between gap-x-3 border-t border-gray-150 pt-4">
         <button
-          v-if="request.status === 'active'"
-          type="button"
-          class="text-sm text-red-500 cursor-pointer hover:underline"
-          @click="onComplete"
+            v-if="request.status === 'active'"
+            type="button"
+            class="text-sm text-red-500 cursor-pointer hover:underline disabled:cursor-not-allowed disabled:opacity-50"
+            :disabled="saving"
+            @click="onComplete"
         >
           Завершить заявку
         </button>
-        <BaseButton variant="secondary" @click="emit('update:modelValue', false)">Закрыть</BaseButton>
+        <BaseButton variant="secondary" class="ml-auto" @click="emit('update:modelValue', false)">Закрыть</BaseButton>
       </div>
     </div>
   </BaseModal>

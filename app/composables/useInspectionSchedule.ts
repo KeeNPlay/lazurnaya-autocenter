@@ -1,6 +1,13 @@
 import { INSPECTION_TIME_SLOTS } from '~/constants/inspectionFormTime'
 import { toMinskParts, ddmmyyyyToIsoKey, isoKeyToDdMmYyyy, getMinskNowParts, isPastMinskTime } from '~/utils/minskTime'
 
+interface IgnoredSlot {
+    // dd.mm.yyyy
+    date: string
+    // hh:mm:ss
+    time: string
+}
+
 function dateToKey(date: Date): string {
     const year = date.getFullYear()
     const month = String(date.getMonth() + 1).padStart(2, '0')
@@ -47,18 +54,26 @@ export function useInspectionSchedule() {
         }
     }
 
-    function getAvailableTimeOptions(ddmmyyyy: string) {
+    function getAvailableTimeOptions(ddmmyyyy: string, ignoreSlot?: IgnoredSlot) {
         if (!ddmmyyyy) return INSPECTION_TIME_SLOTS.map((slot) => ({ ...slot, disabled: false }))
+
         const isoKey = ddmmyyyyToIsoKey(ddmmyyyy)
         const busyTimes = state.busyByDate.get(isoKey) ?? new Set<string>()
+        const ignoredTime = ignoreSlot && ddmmyyyyToIsoKey(ignoreSlot.date) === isoKey ? ignoreSlot.time : null
+
         return INSPECTION_TIME_SLOTS.map((slot) => ({
             ...slot,
-            disabled: busyTimes.has(slot.value) || isPastMinskTime(isoKey, slot.value)
+            disabled: (busyTimes.has(slot.value) && slot.value !== ignoredTime) || isPastMinskTime(isoKey, slot.value)
         }))
     }
 
-    function isDateFullyBooked(date: Date): boolean {
+    function isDateFullyBooked(date: Date, ignoreSlot?: IgnoredSlot): boolean {
         const dateKey = dateToKey(date)
+        const ignoredKey = ignoreSlot ? ddmmyyyyToIsoKey(ignoreSlot.date) : null
+
+        if (ignoredKey === dateKey) {
+            return getAvailableTimeOptions(isoKeyToDdMmYyyy(dateKey), ignoreSlot).every((option) => option.disabled)
+        }
         if (state.fullyBookedDates.has(dateKey)) return true
         if (dateKey === getMinskNowParts().date) {
             return getAvailableTimeOptions(isoKeyToDdMmYyyy(dateKey)).every((option) => option.disabled)

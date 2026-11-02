@@ -1,6 +1,5 @@
 <script setup lang="ts">
 const { isLoading } = usePageLoader()
-
 </script>
 
 <template>
@@ -10,6 +9,8 @@ const { isLoading } = usePageLoader()
     <main class="flex-1 py-6">
       <slot />
     </main>
+
+    <AdminNotificationHost />
 
     <BaseLoader v-if="isLoading" />
   </div>
