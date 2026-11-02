@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { CARGO_TYPES, LOADING_METHODS } from '../formEnums'
-import {phoneSchema} from "./phoneSchema";
+import { phoneSchema } from './phoneSchema'
 
 const optionalNumeric = z
     .union([z.string(), z.number()])
@@ -12,7 +12,8 @@ const optionalNumeric = z
     })
     .pipe(z.number().int().min(0).optional())
 
-export const transportationFormSchema = z.object({
+// For admin-panel and public form
+export const transportationBookingSchema = z.object({
     fromCity: z.string().trim().min(2, 'Укажите город отправления').max(255),
     toCity: z.string().trim().min(2, 'Укажите город доставки').max(255),
     departureDate: z.string().regex(/^\d{2}\.\d{2}\.\d{4}$/, 'Некорректный формат даты'),
@@ -29,8 +30,13 @@ export const transportationFormSchema = z.object({
     loadingMethods: z.array(z.enum(LOADING_METHODS)).default([]),
     unloadingMethods: z.array(z.enum(LOADING_METHODS)).default([]),
     budget: z.tuple([z.number().min(0), z.number().min(0)]),
-    comment: z.string().trim().max(1000).optional().or(z.literal('')),
+    comment: z.string().trim().max(1000).optional().or(z.literal(''))
+})
+
+// Only for public form
+export const transportationFormSchema = transportationBookingSchema.extend({
     captchaToken: z.string().min(1, 'Капча не пройдена')
 })
 
+export type TransportationBookingInput = z.infer<typeof transportationBookingSchema>
 export type TransportationFormInput = z.infer<typeof transportationFormSchema>

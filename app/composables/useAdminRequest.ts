@@ -1,3 +1,5 @@
+import { computed, ref, shallowRef, watch } from 'vue'
+import { navigateTo, useFetch } from '#imports'
 import type {
   AdminRequest,
   AdminRequestsResponse,
@@ -5,6 +7,7 @@ import type {
   RequestStatus,
   RequestType
 } from '~/types/request'
+import type { AdminRequestCreatePayload } from '~/types/requestCreate'
 
 const EMPTY_COUNTS: Readonly<Record<RequestStatus, number>> = { active: 0, completed: 0, cancelled: 0 }
 
@@ -14,10 +17,10 @@ export function useAdminRequests(type: RequestType) {
   const status = ref<RequestStatus>('active')
   const page = ref<number>(1)
 
-  // Смена вкладки и сброс страницы — одно изменение, поэтому уходит один запрос
+  // Switching tabs and resetting the page counts as a single change, so only one request is sent
   const activeTab = computed<RequestStatus>({
-    get: () => status.value,
-    set: (value) => {
+    get: (): RequestStatus => status.value,
+    set: (value: RequestStatus): void => {
       if (value === status.value) return
       status.value = value
       page.value = 1
@@ -25,24 +28,26 @@ export function useAdminRequests(type: RequestType) {
   })
 
   const currentPage = computed<number>({
-    get: () => page.value,
-    set: (value) => {
+    get: (): number => page.value,
+    set: (value: number): void => {
       page.value = value
     }
   })
 
   const query = computed(() => ({ type, status: status.value, page: page.value }))
 
-  const { data, pending, error, refresh } = useFetch<AdminRequestsResponse>('/api/admin/requests', {
+  const { data, pending: fetchPending, error, refresh } = useFetch<AdminRequestsResponse>('/api/admin/requests', {
     key: `admin-requests:${type}`,
     query
   })
 
-  // Хранит последний успешный ответ, чтобы счётчики и таблица не мигали при переключении
+  const pending = computed<boolean>(() => Boolean(fetchPending.value))
+
+  // Stores the last successful response so that counters and the table don't flicker during switching
   const lastResponse = shallowRef<AdminRequestsResponse | null>(null)
   watch(
       data,
-      (value): void => {
+      (value: AdminRequestsResponse | null | undefined): void => {
         if (value) lastResponse.value = value
       },
       { immediate: true }
@@ -50,12 +55,12 @@ export function useAdminRequests(type: RequestType) {
 
   const response = computed<AdminRequestsResponse | null>(() => data.value ?? lastResponse.value)
 
-  // Сервер мог сжать номер страницы (например, после отмены последней заявки на странице)
-  watch(response, (value): void => {
+  // The server might have compressed the page number (for example, after the cancellation of the last request on the page)
+  watch(response, (value: AdminRequestsResponse | null): void => {
     if (value && value.page !== page.value) page.value = value.page
   })
 
-  watch(error, async (err): Promise<void> => {
+  watch(error, async (err: unknown): Promise<void> => {
     if (!err) return
 
     if (isFetchErrorWithStatus(err, 401)) {
@@ -72,14 +77,19 @@ export function useAdminRequests(type: RequestType) {
 
   const isMutating = ref<boolean>(false)
 
-  async function reload(): Promise<void> {
+  async function refreshList(): Promise<void> {
     await refresh()
+  }
+
+  async function reload(): Promise<void> {
+    await refreshList()
   }
 
   async function mutate(
       action: () => Promise<unknown>,
       successMessage: string,
-      fallbackError: string
+      fallbackError: string,
+      afterSuccess: () => Promise<void> = refreshList
   ): Promise<boolean> {
     if (isMutating.value) return false
     isMutating.value = true
@@ -87,9 +97,9 @@ export function useAdminRequests(type: RequestType) {
     try {
       await action()
       notify('success', successMessage)
-      await refresh()
+      await afterSuccess()
       return true
-    } catch (err) {
+    } catch (err: unknown) {
       if (isFetchErrorWithStatus(err, 401)) {
         await navigateTo('/admin/login')
         return false
@@ -98,7 +108,7 @@ export function useAdminRequests(type: RequestType) {
       notify('error', getServerErrorMessage(err, fallbackError))
 
       if (isFetchErrorWithStatus(err, 409) || isFetchErrorWithStatus(err, 404)) {
-        await refresh()
+        await refreshList()
       }
       return false
     } finally {
@@ -122,6 +132,23 @@ export function useAdminRequests(type: RequestType) {
     )
   }
 
+  function createRequest(payload: AdminRequestCreatePayload): Promise<boolean> {
+    return mutate(
+        () => $fetch(`/api/admin/requests/${type}`, { method: 'POST', body: payload }),
+        'Заявка создана',
+        'Не удалось создать заявку',
+        async (): Promise<void> => {
+          // A new request is always "active": navigate to the first page of the "Active" tab
+          const queryWillChange = status.value !== 'active' || page.value !== 1
+          status.value = 'active'
+          page.value = 1
+
+          // If the query changes, useFetch will automatically re-fetch the data
+          if (!queryWillChange) await refreshList()
+        }
+    )
+  }
+
   return {
     activeTab,
     currentPage,
@@ -132,6 +159,7 @@ export function useAdminRequests(type: RequestType) {
     isMutating,
     reload,
     updateStatus,
-    updateRequest
+    updateRequest,
+    createRequest
   }
 }

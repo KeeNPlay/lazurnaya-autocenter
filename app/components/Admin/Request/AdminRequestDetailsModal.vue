@@ -5,20 +5,24 @@ import type {
   VehicleType,
   WashType
 } from '~/types/request'
+import type { SchedulableCreatePayload } from '~/types/requestCreate'
 import { VEHICLE_TYPE_OPTIONS, WASH_TYPE_OPTIONS } from '~/constants/washingForm'
 
 const props = withDefaults(
     defineProps<{
       modelValue: boolean
-      request: SchedulableRequest | null
+      type: 'inspection' | 'washing'
+      mode?: 'create' | 'edit'
+      request?: SchedulableRequest | null
       saving?: boolean
     }>(),
-    { saving: false }
+    { mode: 'edit', request: null, saving: false }
 )
 
 const emit = defineEmits<{
   'update:modelValue': [value: boolean]
   save: [id: number, payload: AdminRequestUpdatePayload]
+  create: [payload: SchedulableCreatePayload]
   cancel: [id: number]
 }>()
 
@@ -36,11 +40,18 @@ const form = reactive({
   washType: ''
 })
 
-// Меняется при каждом открытии — принудительно пересоздаёт поля (в т.ч. маску телефона)
+// Changes every time it’s opened — forces the fields (including the phone mask) to be recreated
 const formKey = ref<number>(0)
 
-const isInspection = computed<boolean>(() => props.request?.type === 'inspection')
-const isWashing = computed<boolean>(() => props.request?.type === 'washing')
+// Displays an inline confirmation for the cancellation of a request
+const isConfirmingCancel = ref<boolean>(false)
+
+const isCreate = computed<boolean>(() => props.mode === 'create')
+const isInspection = computed<boolean>(() => props.type === 'inspection')
+const isWashing = computed<boolean>(() => props.type === 'washing')
+
+// The request being edited (it does not exist when in creation mode)
+const editRequest = computed<SchedulableRequest | null>(() => (isCreate.value ? null : props.request))
 
 function fillForm(request: SchedulableRequest | null): void {
   form.date = request?.date ?? ''
@@ -51,39 +62,46 @@ function fillForm(request: SchedulableRequest | null): void {
   form.plateNumber = request?.type === 'inspection' ? request.plateNumber : ''
   form.vehicleType = request?.type === 'washing' ? request.vehicleType : ''
   form.washType = request?.type === 'washing' ? request.washType : ''
+  isConfirmingCancel.value = false
   formKey.value++
 }
 
 async function reloadSchedule(): Promise<void> {
-  if (props.request?.type === 'inspection') await inspectionSchedule.load(true)
-  else if (props.request?.type === 'washing') await washingSchedule.load(true)
+  if (isInspection.value) await inspectionSchedule.load(true)
+  else await washingSchedule.load(true)
 }
 
 watch(
-    [() => props.modelValue, () => props.request],
+    [() => props.modelValue, () => props.request, () => props.mode],
     (): void => {
       if (!props.modelValue) return
-      fillForm(props.request)
+      fillForm(editRequest.value)
       void reloadSchedule()
     }
 )
 
-// После любой попытки сохранения (например, 409) обновляем занятость
+// After any save attempt (e.g., 409), update the occupancy status
 watch(
     () => props.saving,
     (isSaving, wasSaving): void => {
-      if (wasSaving && !isSaving && props.modelValue) void reloadSchedule()
+      if (!wasSaving || isSaving) return
+      isConfirmingCancel.value = false
+      if (props.modelValue) void reloadSchedule()
     }
 )
 
-// Собственный слот заявки не считается занятым
+// The current application slot is not considered occupied (only when editing)
 const ownInspectionSlot = computed(() =>
-    props.request ? { date: props.request.date, time: `${props.request.time}:00` } : undefined
+    editRequest.value ? { date: editRequest.value.date, time: `${editRequest.value.time}:00` } : undefined
 )
 
 const ownWashingSlot = computed(() =>
-    props.request?.type === 'washing'
-        ? { date: props.request.date, time: `${props.request.time}:00`, durationMinutes: props.request.durationMinutes }
+    editRequest.value?.type === 'washing'
+        ? {
+          date: editRequest.value.date,
+          time: `${editRequest.value.time}:00`,
+          durationMinutes: editRequest.value.durationMinutes
+        }
         : undefined
 )
 
@@ -158,9 +176,7 @@ const canSave = computed<boolean>(() => {
   return isCombinationAllowed.value
 })
 
-function onSave(): void {
-  if (!props.request || !canSave.value) return
-
+function buildPayload(): SchedulableCreatePayload {
   const base = {
     date: form.date,
     time: form.time,
@@ -168,44 +184,80 @@ function onSave(): void {
     phone: form.phone
   }
 
-  if (props.request.type === 'inspection') {
-    emit('save', props.request.id, {
+  if (isInspection.value) {
+    return {
       ...base,
       carBrand: form.carBrand.trim(),
       plateNumber: form.plateNumber.trim()
-    })
-    return
+    }
   }
 
-  emit('save', props.request.id, {
+  return {
     ...base,
     vehicleType: form.vehicleType as VehicleType,
     washType: form.washType as WashType
-  })
+  }
 }
 
-function onCancelRequest(): void {
+function onSubmit(): void {
+  if (!canSave.value) return
+
+  if (isCreate.value) {
+    emit('create', buildPayload())
+    return
+  }
+
+  if (props.request) emit('save', props.request.id, buildPayload())
+}
+
+function onConfirmCancel(): void {
   if (!props.request || props.saving) return
   emit('cancel', props.request.id)
 }
 </script>
 
 <template>
-  <BaseModal :model-value="modelValue" title="Детали заявки" @update:model-value="emit('update:modelValue', $event)">
+  <BaseModal
+      :model-value="modelValue"
+      :title="isCreate ? 'Новая заявка' : 'Детали заявки'"
+      @update:model-value="emit('update:modelValue', $event)"
+  >
     <div
-        v-if="request"
+        v-if="isCreate || request"
         :key="formKey"
         class="flex w-full max-w-lg flex-col gap-y-5 rounded-md bg-gray-100 p-4"
     >
-      <h2 class="text-xl font-medium text-white">Заявка №{{ request.id }}</h2>
+      <h2 v-if="isCreate" class="text-xl font-medium text-white">Новая заявка</h2>
+      <h2 v-else-if="request" class="text-xl font-medium text-white">Заявка №{{ request.id }}</h2>
 
       <BaseFormField label="Имя / Компания">
-        <BaseFormInput v-model="form.nameOrCompany" />
+        <BaseFormInput v-model="form.nameOrCompany"/>
       </BaseFormField>
 
       <BaseFormField label="Телефон">
         <BaseFormPhoneInput v-model="form.phone" />
       </BaseFormField>
+
+      <!-- Washing: first select the vehicle and the type of wash; the date and time depend on these choices -->
+      <div v-if="isWashing" class="grid grid-cols-2 gap-x-4">
+        <BaseFormField label="Тип авто">
+          <BaseFormSelect
+              :model-value="form.vehicleType"
+              :options="VEHICLE_TYPE_OPTIONS"
+              placeholder="Выберите"
+              @update:model-value="onVehicleTypeChange"
+          />
+        </BaseFormField>
+        <BaseFormField label="Тип мойки">
+          <BaseFormSelect
+              :model-value="form.washType"
+              :options="washTypeOptions"
+              :disabled="!form.vehicleType"
+              placeholder="Выберите"
+              @update:model-value="onWashTypeChange"
+          />
+        </BaseFormField>
+      </div>
 
       <div class="grid grid-cols-2 gap-x-4">
         <BaseFormField label="Дата">
@@ -214,6 +266,7 @@ function onCancelRequest(): void {
               :disabled="isWashing && !isCombinationAllowed"
               :is-date-disabled-extra="isDateBlocked"
               :loading="scheduleLoading"
+              placeholder="дд.мм.гггг"
               @update:model-value="onDateChange"
           />
         </BaseFormField>
@@ -221,7 +274,7 @@ function onCancelRequest(): void {
           <BaseFormSelect
               v-model="form.time"
               :options="timeOptions"
-              :disabled="isWashing && (!isCombinationAllowed || !form.date)"
+              :disabled="!form.date || (isWashing && !isCombinationAllowed)"
               placeholder="12:00"
           />
         </BaseFormField>
@@ -233,46 +286,50 @@ function onCancelRequest(): void {
 
       <template v-if="isInspection">
         <BaseFormField label="Марка">
-          <BaseFormInput v-model="form.carBrand" />
+          <BaseFormInput v-model="form.carBrand" placeholder="МАЗ, MAN, Scania"/>
         </BaseFormField>
         <BaseFormField label="Гос. номер">
-          <BaseFormInput v-model="form.plateNumber" />
+          <BaseFormInput v-model="form.plateNumber" placeholder="7777 AA-7"/>
         </BaseFormField>
       </template>
 
-      <div v-else class="grid grid-cols-2 gap-x-4">
-        <BaseFormField label="Тип авто">
-          <BaseFormSelect
-              :model-value="form.vehicleType"
-              :options="VEHICLE_TYPE_OPTIONS"
-              @update:model-value="onVehicleTypeChange"
-          />
-        </BaseFormField>
-        <BaseFormField label="Тип мойки">
-          <BaseFormSelect
-              :model-value="form.washType"
-              :options="washTypeOptions"
-              :disabled="!form.vehicleType"
-              @update:model-value="onWashTypeChange"
-          />
-        </BaseFormField>
-      </div>
+      <div class="border-t border-gray-150 pt-4">
+        <!-- Cancellation confirmation (edit mode only) -->
+        <div v-if="isConfirmingCancel && request" class="flex flex-col gap-y-3">
+          <p class="text-sm text-white">
+            Отменить заявку №{{ request.id }} на {{ request.date }} в {{ request.time }}?
+          </p>
+          <div class="flex justify-end gap-x-3">
+            <BaseButton
+                class="bg-red-500 hover:bg-red-600 text-white disabled:cursor-not-allowed disabled:opacity-50"
+                :disabled="saving"
+                @click="onConfirmCancel"
+            >
+              Да, отменить
+            </BaseButton>
+            <BaseButton variant="secondary" :disabled="saving" @click="isConfirmingCancel = false">
+              Нет
+            </BaseButton>
+          </div>
+        </div>
 
-      <div class="flex justify-between gap-x-3 border-t border-gray-150 pt-4">
-        <button
-            type="button"
-            class="text-sm text-red-500 cursor-pointer hover:underline disabled:cursor-not-allowed disabled:opacity-50"
-            :disabled="saving"
-            @click="onCancelRequest"
-        >
-          Отменить заявку
-        </button>
+        <div v-else class="flex justify-between gap-x-3">
+          <button
+              v-if="!isCreate"
+              type="button"
+              class="text-sm text-red-500 cursor-pointer hover:underline disabled:cursor-not-allowed disabled:opacity-50"
+              :disabled="saving"
+              @click="isConfirmingCancel = true"
+          >
+            Отменить заявку
+          </button>
 
-        <div class="ml-auto flex gap-x-3">
-          <BaseButton variant="secondary" @click="emit('update:modelValue', false)">Закрыть</BaseButton>
-          <BaseButton :disabled="!canSave" class="disabled:cursor-not-allowed disabled:opacity-50" @click="onSave">
-            Сохранить
-          </BaseButton>
+          <div class="ml-auto flex gap-x-3">
+            <BaseButton variant="secondary" @click="emit('update:modelValue', false)">Закрыть</BaseButton>
+            <BaseButton :disabled="!canSave" class="disabled:cursor-not-allowed disabled:opacity-50" @click="onSubmit">
+              {{ isCreate ? 'Создать' : 'Сохранить' }}
+            </BaseButton>
+          </div>
         </div>
       </div>
     </div>

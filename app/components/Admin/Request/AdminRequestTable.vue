@@ -20,7 +20,8 @@ const isInspection = computed<boolean>(() => props.type === 'inspection')
 const isWashing = computed<boolean>(() => props.type === 'washing')
 const isTransportation = computed<boolean>(() => props.type === 'transportation')
 
-const COLUMNS_COUNT = 7 as const
+// id + дата + клиент + телефон + 2 специфичные колонки + статус + действия
+const COLUMNS_COUNT = 8 as const
 
 const emptyText = computed<string>(() =>
     props.loading && props.requests.length === 0 ? 'Загрузка...' : 'Заявок не найдено'
@@ -34,6 +35,7 @@ const emptyText = computed<string>(() =>
       <table class="w-full text-left text-sm">
         <thead>
         <tr class="bg-gray-150 text-gray-900 font-medium">
+          <th class="px-4 py-4">id</th>
           <th class="px-4 py-4">{{ isTransportation ? 'Дата отправления' : 'Дата / Время' }}</th>
           <th class="px-4 py-4">Клиент</th>
           <th class="px-4 py-4">Телефон</th>
@@ -43,7 +45,7 @@ const emptyText = computed<string>(() =>
           <th v-if="isWashing" class="px-4 py-4">Тип авто</th>
           <th v-if="isTransportation" class="px-4 py-4">Откуда</th>
           <th v-if="isTransportation" class="px-4 py-4">Куда</th>
-          <th class="px-4 py-4">Статус</th>
+          <th class="px-4 py-4 text-center">Статус</th>
           <th class="px-4 py-4 text-right">Действия</th>
         </tr>
         </thead>
@@ -60,6 +62,7 @@ const emptyText = computed<string>(() =>
             :key="request.id"
             class="border-b border-gray-150 transition-colors duration-150 hover:bg-gray-150/30"
         >
+          <td class="whitespace-nowrap px-4 py-3 text-gray-400">{{ request.id }}</td>
           <td class="whitespace-nowrap px-4 py-3">
             <template v-if="request.type === 'transportation'">{{ request.departureDate }}</template>
             <template v-else>{{ request.date }} {{ request.time }}</template>
@@ -76,7 +79,7 @@ const emptyText = computed<string>(() =>
           </td>
           <td v-if="request.type === 'transportation'" class="px-4 py-3">{{ request.fromCity }}</td>
           <td v-if="request.type === 'transportation'" class="px-4 py-3">{{ request.toCity }}</td>
-          <td class="px-4 py-3">
+          <td class="px-4 py-3 text-center">
             <AdminRequestStatusBadge :status="request.status" />
           </td>
           <td class="px-4 py-3 text-right" @click.stop>
@@ -137,8 +140,10 @@ const emptyText = computed<string>(() =>
       >
         <div class="flex items-start justify-between gap-x-3">
           <span class="font-medium text-white">
-            <template v-if="request.type === 'transportation'">{{ request.departureDate }}</template>
-            <template v-else>{{ request.date }} {{ request.time }}</template>
+            <span class="text-gray-400 mr-1">№{{ request.id }}</span>
+            <span class="text-gray-400 mr-1">№{{ request.id }}</span>
+            <template v-if="request.type === 'transportation'"> {{ request.departureDate }}</template>
+            <template v-else> {{ request.date }} {{ request.time }}</template>
           </span>
           <AdminRequestStatusBadge :status="request.status" />
         </div>

@@ -1,8 +1,6 @@
 import { inspectionFormSchema } from '../../utils/validation/inspectionSchema'
-import { parseScheduledAt } from '../../utils/parseScheduledAt'
-import { isUniqueViolation } from '../../utils/isUniqueViolation'
-import { requests, inspectionDetails } from '../../database/schema'
 import { readValidatedBodyRu } from '../../utils/validation/readValidatedBodyRu'
+import { createInspectionBooking } from '../../utils/bookings/createInspectionBooking'
 
 export default defineEventHandler(async (event) => {
 
@@ -18,46 +16,8 @@ export default defineEventHandler(async (event) => {
   // 3. Verify Captcha
   await verifyTurnstile(body.captchaToken, event)
 
-  // 4. Date/Time parsing and working-hours rules
-  const scheduledAt = parseScheduledAt(body.date, body.time)
+  // 4. Business rules + insert (shared with admin panel)
+  const id = await createInspectionBooking(body)
 
-  if (scheduledAt.getTime() < Date.now()) {
-    throw createError({ statusCode: 400, statusMessage: 'Нельзя записаться на прошедшую дату' })
-  }
-  if (isMinskWeekend(scheduledAt)) {
-    throw createError({ statusCode: 400, statusMessage: 'Запись на выходные невозможна' })
-  }
-  if (!isValidInspectionTime(body.time)) {
-    throw createError({ statusCode: 400, statusMessage: 'Выбранное время недоступно для записи' })
-  }
-
-  // 5. Transaction: create request + details atomically
-  try {
-    const result = await db.transaction(async (tx) => {
-      const [request] = await tx
-          .insert(requests)
-          .values({
-            type: 'inspection',
-            nameOrCompany: body.nameOrCompany,
-            phone: body.phone
-          })
-          .returning({ id: requests.id })
-
-      await tx.insert(inspectionDetails).values({
-        requestId: request!.id,
-        scheduledAt,
-        carBrand: body.carBrand,
-        plateNumber: body.plateNumber
-      })
-
-      return request!.id
-    })
-
-    return { success: true, id: result }
-  } catch (error) {
-    if (isUniqueViolation(error)) {
-      throw createError({ statusCode: 409, statusMessage: 'Это время уже занято. Выберите другое.' })
-    }
-    throw error
-  }
+  return { success: true, id }
 })
