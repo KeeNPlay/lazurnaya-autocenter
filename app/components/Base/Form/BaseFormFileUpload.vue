@@ -5,13 +5,19 @@ interface Props {
   accept?: string
   maxSizeMb?: number
   disabled?: boolean
+  loading?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
   accept: '',
   maxSizeMb: undefined,
-  disabled: false
+  disabled: false,
+  loading: false
 })
+
+const emit = defineEmits<{
+  save: []
+}>()
 
 const modelValue = defineModel<File | null>({ default: null })
 
@@ -20,22 +26,22 @@ const isDragOver = ref<boolean>(false)
 const error = ref<string | null>(null)
 
 const acceptedExtensions = computed<string[]>(() =>
-  props.accept
-    .split(',')
-    .map((item) => item.trim())
-    .filter(Boolean)
+    props.accept
+        .split(',')
+        .map((item) => item.trim())
+        .filter(Boolean)
 )
 
 const acceptLabel = computed<string>(() =>
-  acceptedExtensions.value.length > 0 ? acceptedExtensions.value.join(', ').toUpperCase() : 'Любой формат'
+    acceptedExtensions.value.length > 0 ? acceptedExtensions.value.join(', ').toUpperCase() : 'Любой формат'
 )
 
 function validateFile(file: File): string | null {
   if (acceptedExtensions.value.length > 0) {
     const isValidType = acceptedExtensions.value.some((pattern) =>
-      pattern.startsWith('.')
-        ? file.name.toLowerCase().endsWith(pattern.toLowerCase())
-        : file.type === pattern
+        pattern.startsWith('.')
+            ? file.name.toLowerCase().endsWith(pattern.toLowerCase())
+            : file.type === pattern
     )
 
     if (!isValidType) {
@@ -95,56 +101,60 @@ function onKeydown(event: KeyboardEvent): void {
 }
 
 function removeFile(): void {
+  if (props.disabled) return
   modelValue.value = null
   error.value = null
 }
 
 function onSave(): void {
-  alert('Файл загружен')
+  if (props.disabled || !modelValue.value) return
+  emit('save')
 }
 </script>
 
 <template>
   <div class="flex flex-col gap-y-2">
     <div
-      role="button"
-      tabindex="0"
-      :aria-label="modelValue ? `Выбран файл ${modelValue.name}` : 'Выбрать файл'"
-      class="relative flex flex-col items-center justify-center gap-y-1.5 rounded-md border-2 border-dashed px-4 py-6 text-center transition-colors duration-200"
-      :class="[
+        role="button"
+        tabindex="0"
+        :aria-label="modelValue ? `Выбран файл ${modelValue.name}` : 'Выбрать файл'"
+        class="relative flex flex-col items-center justify-center gap-y-1.5 rounded-md border-2 border-dashed px-4 py-6 text-center transition-colors duration-200"
+        :class="[
         isDragOver ? 'border-orange-500 bg-orange-500/5' : 'border-gray-300 bg-gray-100/50 hover:border-gray-400',
         disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
       ]"
-      @click="openDialog"
-      @keydown="onKeydown"
-      @dragover.prevent="onDragOver"
-      @dragleave.prevent="isDragOver = false"
-      @drop.prevent="onDrop"
+        @click="openDialog"
+        @keydown="onKeydown"
+        @dragover.prevent="onDragOver"
+        @dragleave.prevent="isDragOver = false"
+        @drop.prevent="onDrop"
     >
       <input
-        ref="inputRef"
-        type="file"
-        class="sr-only"
-        :accept="accept"
-        :disabled="disabled"
-        @change="onInputChange"
-        @click.stop
+          ref="inputRef"
+          type="file"
+          class="sr-only"
+          :accept="accept"
+          :disabled="disabled"
+          @change="onInputChange"
+          @click.stop
       >
 
       <template v-if="modelValue">
         <Icon name="heroicons:document-check-20-solid" class="text-3xl text-orange-500" />
         <p class="max-w-full truncate text-sm font-medium text-white">{{ modelValue.name }}</p>
         <p class="text-xs text-gray-400">{{ formatFileSize(modelValue.size) }}</p>
-        <BaseButton 
-          class="text-xs lg:text-xs 2xl:text-xs"
-          @click.stop="onSave"
+        <BaseButton
+            class="text-xs lg:text-xs 2xl:text-xs"
+            :disabled="disabled"
+            @click.stop="onSave"
         >
-          Сохранить файл
+          {{ loading ? 'Загрузка...' : 'Сохранить файл' }}
         </BaseButton>
         <BaseButton
-          variant="transparent"
-          class="text-red-500 hover:text-red-400 text-xs lg:text-xs 2xl:text-xs gap-x-1 font-normal"
-          @click.stop="removeFile"
+            variant="transparent"
+            class="text-red-500 hover:text-red-400 text-xs lg:text-xs 2xl:text-xs gap-x-1 font-normal"
+            :disabled="disabled"
+            @click.stop="removeFile"
         >
           <template #icon-left>
             <Icon name="heroicons:x-mark-20-solid" />

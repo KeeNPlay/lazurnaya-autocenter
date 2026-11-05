@@ -89,8 +89,10 @@ export default defineNuxtConfig({
   turnstile: {
     siteKey: process.env.NUXT_TURNSTILE_SITE_KEY,
   },
-  
+
   runtimeConfig: {
+    // Folder for files uploaded from the admin panel. Can be overridden via the NUXT_UPLOAD_DIR variable (use an absolute path for production).
+    uploadDir: '',
     turnstile: {
       secretKey: process.env.NUXT_TURNSTILE_SECRET_KEY,
     },
@@ -124,6 +126,24 @@ export default defineNuxtConfig({
     '/api/forms/**': {
       security: {
         rateLimiter: false,
+      }
+    },
+    // PDF up to 10mb on admin-panel
+    '/api/admin/files/**': {
+      security: {
+        requestSizeLimiter: {
+          maxRequestSizeInBytes: 11 * 1024 * 1024,
+          maxUploadFileRequestInBytes: 11 * 1024 * 1024
+        },
+        xssValidator: false
+      }
+    },
+    // Disable CSP for PDF files on admin-panel
+    '/docs/**': {
+      security: {
+        headers: {
+          contentSecurityPolicy: false
+        }
       }
     }
   }
