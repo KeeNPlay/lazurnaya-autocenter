@@ -89,3 +89,13 @@ export const transportationDetails = pgTable('transportation_details', {
     budgetMax: integer('budget_max'),
     comment: text('comment')
 })
+
+//blacklist table
+
+export const blacklist = pgTable('blacklist', {
+    id: serial('id').primaryKey(),
+    phone: varchar('phone', { length: 20 }).notNull().unique(),
+    reason: varchar('reason', { length: 500 }),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    expiresAt: timestamp('expires_at', { withTimezone: true }).notNull()
+})

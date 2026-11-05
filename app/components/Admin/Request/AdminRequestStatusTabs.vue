@@ -33,7 +33,7 @@ const visibleTabs = computed<readonly TabConfig[]>(() =>
 </script>
 
 <template>
-  <div class="flex flex-wrap gap-x-3 gap-y-2">
+  <div class="flex flex-col md:flex-row flex-wrap gap-x-3 gap-y-2">
     <BaseButton
       v-for="tab in visibleTabs"
       :key="tab.value"

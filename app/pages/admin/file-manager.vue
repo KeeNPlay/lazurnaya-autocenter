@@ -24,8 +24,8 @@ async function onUpload(key: AdminFileKey): Promise<void> {
 
 <template>
   <div class="flex flex-col gap-y-6 px-2 md:px-6">
-    <section class="flex flex-col gap-y-4 md:gap-y-1" aria-label="Секция заголовка">
-      <h1 class="ml-20 text-2xl font-medium text-white md:ml-0">
+    <section class="flex flex-col gap-y-5 md:gap-y-1 mt-2" aria-label="Секция заголовка">
+      <h1 class="ml-20 md:ml-0 text-base sm:text-lg lg:text-2xl font-medium text-white">
         Файловый менеджер
       </h1>
       <p class="text-xs text-red-500 font-light">

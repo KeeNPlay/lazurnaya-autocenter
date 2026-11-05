@@ -46,6 +46,7 @@ defineExpose({ reset })
       theme="dark"
       :data-size="widgetSize"
       language="ru"
+      :options="{ language: 'ru' }"
       :model-value="modelValue"
       @update:model-value="$emit('update:modelValue', $event)"
   />

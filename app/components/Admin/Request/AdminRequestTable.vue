@@ -141,7 +141,6 @@ const emptyText = computed<string>(() =>
         <div class="flex items-start justify-between gap-x-3">
           <span class="font-medium text-white">
             <span class="text-gray-400 mr-1">№{{ request.id }}</span>
-            <span class="text-gray-400 mr-1">№{{ request.id }}</span>
             <template v-if="request.type === 'transportation'"> {{ request.departureDate }}</template>
             <template v-else> {{ request.date }} {{ request.time }}</template>
           </span>

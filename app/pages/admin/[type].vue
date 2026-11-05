@@ -123,22 +123,22 @@ async function onConfirmCancel(): Promise<void> {
 <template>
   <div class="flex flex-col gap-y-6 px-2 md:px-6">
     <div class="flex items-center justify-between gap-x-3">
-      <h1 class="ml-20 md:ml-0 text-2xl font-medium text-white">
+      <h1 class="ml-20 md:ml-0 text-base sm:text-lg lg:text-2xl font-medium text-white">
         {{ REQUEST_TYPE_LABELS[type] }}
       </h1>
 
       <div class="flex items-center gap-x-3">
         <BaseButton aria-label="Добавить заявку" title="Добавить заявку" @click="openCreate">
           <span class="flex items-center gap-x-2">
-            <Icon name="heroicons:plus-20-solid" class="text-[1.25rem]" />
+            <Icon name="heroicons:plus-20-solid" />
             <span class="max-[1280px]:hidden">Добавить заявку</span>
           </span>
         </BaseButton>
 
-        <BaseButton variant="secondary" aria-label="Обновить список" :disabled="pending" @click="reload">
+        <BaseButton variant="secondary" aria-label="Обновить список" :disabled="pending" @click="reload" class="lg:py-3.75 2xl:py-5.25">
           <Icon
               name="heroicons:arrow-path-20-solid"
-              class="text-[1.25rem] text-orange-800"
+              class="text-orange-800"
               :class="{ 'animate-spin': pending }"
           />
         </BaseButton>
