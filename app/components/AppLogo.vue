@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-type Variant = 'primary' | 'glow'
+type Variant = 'primary' | 'glow' | 'white'
 type Size = 'xl' | 'lg' | 'base'
 
 interface IProps {
@@ -13,6 +13,8 @@ const variants: Record<Variant, string> = {
         'bg-orange-500',
     glow:
         'bg-orange-500 inset-shadow-white/50',
+    white:
+        'bg-white outline-1 outline-gray-150'
 }
 
 const sizes: Record<Size, string> = {

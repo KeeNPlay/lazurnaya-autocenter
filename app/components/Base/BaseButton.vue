@@ -2,7 +2,7 @@
   import { NuxtLink } from '#components'
   import { computed } from 'vue'
 
-  type Variant = 'primary' | 'secondary' | 'ghost' | 'transparent'
+  type Variant = 'primary' | 'secondary' | 'ghost' | 'transparent' | 'white'
   type Width = 'auto' | 'full' | 'fixed'
   type ComponentType = 'button' | 'submit' | 'reset'
 
@@ -40,7 +40,9 @@
     ghost:
       'bg-gray-200/20 hover:bg-gray-200/40 backdrop-blur-md border border-gray-200 text-white px-5 py-3 2xl:px-6 2xl:py-4',
     transparent:
-      'text-orange-500 hover:text-orange-600 text-sm lg:text-lg 2xl:text-xl'
+      'text-orange-500 hover:text-orange-600 text-sm lg:text-lg 2xl:text-xl',
+    white:
+      'bg-gray-100 hover:bg-gray-150 outline-1 outline-white text-white px-5 py-3 2xl:px-6 2xl:py-4 rounded-none!'
   }
 
   const widthClasses = computed(() => {
