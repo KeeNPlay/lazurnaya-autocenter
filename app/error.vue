@@ -14,8 +14,6 @@ useSeoMeta({
   title: () => (isNotFound.value ? 'Страница не найдена' : 'Ошибка'),
   robots: 'noindex, nofollow'
 })
-
-// clearError сбрасывает состояние ошибки, обычный NuxtLink оставил бы страницу ошибки на экране
 async function goHome(): Promise<void> {
   await clearError({ redirect: '/' })
 }
@@ -23,7 +21,6 @@ async function goHome(): Promise<void> {
 
 <template>
   <div class="relative isolate flex min-h-dvh flex-col overflow-hidden bg-gray-100 font-sans">
-    <!-- Код ошибки: вне потока, высоту страницы не определяет -->
     <div
         class="pointer-events-none absolute inset-x-0 top-0 aspect-[100/70] mt-[max(0px,calc(40dvh_-_43vw))]
                landscape:max-lg:mt-0 landscape:max-lg:aspect-[100/43]
