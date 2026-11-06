@@ -19,6 +19,7 @@ logs
 .fleet
 .idea
 storage/
+images-src
 
 # Local env files
 .env
