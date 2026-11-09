@@ -1,4 +1,6 @@
-export function useFormConsent() {
+import type { MaybeRefOrGetter } from 'vue'
+
+export function useFormConsent(isFormFilled: MaybeRefOrGetter<boolean> = true) {
   const consent = ref({
     dataProcessing: false,
     privacyPolicy: false,
@@ -7,10 +9,17 @@ export function useFormConsent() {
   const captchaToken = ref<string | undefined>(undefined)
 
   const canSubmit = computed((): boolean =>
-    consent.value.dataProcessing &&
-    consent.value.privacyPolicy &&
-    !!captchaToken.value
+      toValue(isFormFilled) &&
+      consent.value.privacyPolicy &&
+      !!captchaToken.value
   )
 
-  return { consent, captchaToken, canSubmit }
+  function resetConsent(): void {
+    consent.value = {
+      dataProcessing: false,
+      privacyPolicy: false,
+    }
+  }
+
+  return { consent, captchaToken, canSubmit, resetConsent }
 }

@@ -5,16 +5,16 @@ const { isLoading, loaderVariant } = usePageLoader()
 const route = useRoute()
 
 watch(
-  () => route.fullPath,
-  () => closeModal()
+    () => route.fullPath,
+    () => closeModal()
 )
 </script>
 
 <template>
-  <div class="flex flex-col min-h-screen font-sans bg-gray-100 text-white">
+  <div class="flex flex-col min-h-dvh font-sans bg-gray-100 text-white">
     <AppHeader />
     <main class="lg:px-20 2xl:px-40.5">
-      <NuxtPage />
+      <slot />
     </main>
     <AppFooter />
 

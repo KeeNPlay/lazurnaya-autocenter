@@ -21,7 +21,7 @@ const links = useNavLinks()
             <div class="p-3.5 gap-y-1.25 text-center border border-gray-150 rounded-xl w-full md:w-fit">
                 <h4 class="text-sm lg:text-base 2xl:text-lg font-medium text-orange-500">График работы:</h4>
                 <div class="text-sm lg:text-base 2xl:text-lg font-medium text-white">
-                    <p>8:30 - 12:45</p>
+                    <p>8:30 - 13:00</p>
                     <p>13:30 - 16:30</p>
                 </div>
                 <p class="text-[0.5rem] 2xl:text-[0.625rem] font-medium text-gray-400">Суббота, воскресенье - выходной</p>

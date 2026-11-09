@@ -8,13 +8,22 @@ import {
   type TransportationForm
 } from '~/constants/transportationForm'
 
-const { consent, captchaToken, canSubmit } = useFormConsent()
-
 const captchaRef = ref<{ reset: () => void } | null>(null)
 
 const form = reactive<TransportationForm>(createEmptyTransportationForm())
 
 const budget = ref<[number, number]>([...BUDGET_RANGE.default])
+
+// All required fields are filled in
+const isFormFilled = computed<boolean>(() =>
+    hasText(form.fromCity, 2) &&
+    hasText(form.toCity, 2) &&
+    !!form.departureDate &&
+    hasText(form.nameOrCompany, 2) &&
+    isPhoneComplete(form.phone)
+)
+
+const { consent, captchaToken, canSubmit, resetConsent } = useFormConsent(isFormFilled)
 
 const isSubmitting = ref<boolean>(false)
 const submitError = ref<boolean>(false)
@@ -30,6 +39,7 @@ const toggleAdvanced = (): void => {
 const resetForm = (): void => {
   Object.assign(form, createEmptyTransportationForm())
   budget.value = [...BUDGET_RANGE.default]
+  resetConsent()
 }
 
 async function onSubmit(): Promise<void> {

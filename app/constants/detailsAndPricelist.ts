@@ -18,15 +18,18 @@ export const clientInfo: ICardDescription[] = [
         ]
     },
     {
-        icon: { type: 'icon', value: 'heroicons:receipt-percent-20-solid'},
+        icon: { type: 'icon', value: 'heroicons:receipt-percent-20-solid' },
         title: 'Прайслист',
         descriptionPart: [
-            { type: 'text', value: 'Услуги по мойке автотранспорта: ' },
+            { type: 'heading', value: 'Мойка автотранспорта' },
+            { type: 'text', value: 'Прайслист: ' },
             { type: 'link', value: 'лето', to: 'docs/washing_pricelist.pdf', external: true },
             { type: 'text', value: ', ' },
             { type: 'link', value: 'зима', to: 'docs/winter_washing_pricelist.pdf', external: true },
-            { type: 'text', value: '\n* Скидка предоставляется для транспортных средств проходивших государственный технический осмотр на диагностической станции предприятия в день прохождения.\n* По согласованию с администрацией возможны дополнительные работы не предусмотренные настоящим прейскурантом по договорной цене.\n' },
-            { type: 'link', value: 'Услуги по проведению государственного технического осмотра транспортных средств', to: 'docs/inspection_pricelist.pdf', external: true },
+            { type: 'text', value: '\n* Скидка предоставляется для транспортных средств, проходивших государственный технический осмотр на диагностической станции предприятия, в день прохождения.\n* По согласованию с администрацией возможны дополнительные работы, не предусмотренные настоящим прейскурантом, по договорной цене.' },
+
+            { type: 'heading', value: 'Государственный технический осмотр' },
+            { type: 'link', value: 'Прайслист на услуги по проведению государственного технического осмотра', to: 'docs/inspection_pricelist.pdf', external: true },
         ],
     },
 ]

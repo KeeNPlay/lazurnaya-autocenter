@@ -18,6 +18,7 @@ useSeoMeta({
         description-badge="Наши преимущества:"
         image="reviews"
         :items="transportationItems"
+        :eager="true"
     />
     <FormsTransportationSection />
 </template>

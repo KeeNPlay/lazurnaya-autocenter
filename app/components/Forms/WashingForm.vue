@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { WASH_TYPE_OPTIONS, VEHICLE_TYPE_OPTIONS } from '~/constants/washingForm'
 
-const { consent, captchaToken, canSubmit } = useFormConsent()
 const {
   loading: scheduleLoading,
   error: scheduleError,
@@ -22,6 +21,21 @@ const form = reactive({
   washType: ''
 })
 
+const isCombinationAllowed = computed<boolean>(() =>
+    !!form.vehicleType && !!form.washType && !!getWashingDurationMinutes(form.washType, form.vehicleType)
+)
+
+// All required fields are filled in
+const isFormFilled = computed<boolean>(() =>
+    isCombinationAllowed.value &&
+    !!form.date &&
+    !!form.time &&
+    hasText(form.nameOrCompany, 2) &&
+    isPhoneComplete(form.phone)
+)
+
+const { consent, captchaToken, canSubmit, resetConsent } = useFormConsent(isFormFilled)
+
 onMounted(() => {
   loadSchedule()
 })
@@ -29,10 +43,6 @@ onMounted(() => {
 async function onDatepickerOpen(): Promise<void> {
   await loadSchedule()
 }
-
-const isCombinationAllowed = computed<boolean>(() =>
-    !!form.vehicleType && !!form.washType && !!getWashingDurationMinutes(form.washType, form.vehicleType)
-)
 
 const vehicleTypeOptions = computed(() => VEHICLE_TYPE_OPTIONS)
 
@@ -92,6 +102,7 @@ function resetForm(): void {
   form.phone = ''
   form.vehicleType = ''
   form.washType = ''
+  resetConsent()
 }
 
 async function onSubmit(): Promise<void> {

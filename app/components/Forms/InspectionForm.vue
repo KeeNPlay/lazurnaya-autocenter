@@ -1,5 +1,4 @@
 <script setup lang="ts">
-const { consent, captchaToken, canSubmit } = useFormConsent()
 const {
   loading: scheduleLoading,
   error: scheduleError,
@@ -19,6 +18,18 @@ const form = reactive({
   carBrand: '',
   plateNumber: ''
 })
+
+// All required fields are filled in
+const isFormFilled = computed<boolean>(() =>
+    !!form.date &&
+    !!form.time &&
+    hasText(form.nameOrCompany, 2) &&
+    isPhoneComplete(form.phone) &&
+    hasText(form.carBrand) &&
+    hasText(form.plateNumber)
+)
+
+const { consent, captchaToken, canSubmit, resetConsent } = useFormConsent(isFormFilled)
 
 onMounted(() => {
   loadSchedule()
@@ -53,6 +64,7 @@ function resetForm(): void {
   form.phone = ''
   form.carBrand = ''
   form.plateNumber = ''
+  resetConsent()
 }
 
 async function onSubmit(): Promise<void> {

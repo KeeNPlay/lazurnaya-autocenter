@@ -22,6 +22,7 @@ const washingPricelistLink = computed<string>(() => WASHING_PRICELIST[currentSea
         description-badge="Причины работать именно с нами:"
         image="advantages"
         :items="washingItems"
+        :eager="true"
     />
     <FormsBookingSection default-tab="washing" />
     <PricelistSection 

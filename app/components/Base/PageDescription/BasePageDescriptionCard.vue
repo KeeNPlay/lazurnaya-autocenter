@@ -44,20 +44,26 @@ const props = defineProps({
                 </h3>
             </div>
             <p class="text-sm lg:text-base 2xl:text-lg text-gray-600 font-light">
-                <template v-for="(part, i) in descriptionPart" :key="i">
-                    <NuxtLink
-                        v-if="part.type === 'link'"
-                        :to="part.to"
-                        :external="part.external"
-                        :target="part.external ? '_blank' : undefined"
-                        class="text-orange-700 underline hover:text-orange-800 transition-colors"
-                    >
-                        {{ part.value }}
-                    </NuxtLink>
-                    <template v-else>
-                        {{ part.value }}
-                    </template>
+              <template v-for="(part, i) in descriptionPart" :key="i">
+                <NuxtLink
+                    v-if="part.type === 'link'"
+                    :to="part.to"
+                    :external="part.external"
+                    :target="part.external ? '_blank' : undefined"
+                    class="text-orange-700 underline hover:text-orange-800 transition-colors"
+                >
+                  {{ part.value }}
+                </NuxtLink>
+                <span
+                    v-else-if="part.type === 'heading'"
+                    class="block mt-6 first:mt-0 mb-2 pl-3 border-l-2 border-orange-700 text-white font-semibold"
+                >
+        {{ part.value }}
+    </span>
+                <template v-else>
+                  {{ part.value }}
                 </template>
+              </template>
             </p>
         </div>
     </article>

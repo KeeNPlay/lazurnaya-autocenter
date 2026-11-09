@@ -1,6 +1,7 @@
 export type DescriptionPart =
     | { type: 'text', value: string }
     | { type: 'link', value: string, to: string, external?: boolean }
+    | { type: 'heading', value: string }
 
 export type IconPart =
     | { type: 'text', value: string }

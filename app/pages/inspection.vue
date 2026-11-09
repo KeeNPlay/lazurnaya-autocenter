@@ -18,6 +18,7 @@ useSeoMeta({
         description-badge="Порядок прохождения гостехосмотра:"
         image="services"
         :items="inspectionItems"
+        :eager="true"
     />
     <FormsBookingSection default-tab="inspection" />
     <PricelistSection 

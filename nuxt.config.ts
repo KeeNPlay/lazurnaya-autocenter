@@ -19,9 +19,13 @@ export default defineNuxtConfig({
       title: 'Автоцентр на Лазурной',
       htmlAttrs: {
         lang: 'ru',
+        style: 'background-color: #1a1a1a'
       },
-
-    },
+      meta: [
+        // #1a1a1a is the sRGB value of --color-gray-100 (oklch 21.8%)
+        { name: 'theme-color', content: '#1a1a1a' }
+      ]
+    }
   },
 
   css: [

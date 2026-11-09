@@ -18,6 +18,7 @@ useSeoMeta({
             image="images/contacts.jpg"
             title="Контакты"
             description="Свяжитесь с нами — команда Автоцентра на Лазурной оперативно ответит и обеспечит профессиональное обслуживание без лишних ожиданий."
+            :eager="true"
         />
         <BaseContactsBtnSection />
         <BaseContactsAboutSection />

@@ -21,11 +21,16 @@ defineSlots<{
 const currentIndex = ref<number>(0)
 const isDragging = ref<boolean>(false)
 const dragStartX = ref<number>(0)
+const dragStartY = ref<number>(0)
+const dragAxis = ref<'x' | 'y' | null>(null)
 const dragOffset = ref<number>(0)
 
 const isMounted = ref<boolean>(false)
 
 const { width: windowWidth } = useWindowSize()
+
+const AXIS_LOCK_DISTANCE = 6
+const SWIPE_THRESHOLD = 80
 
 const cardWidthClasses: Record<VisibleCount, string> = {
   1: 'w-full',
@@ -80,10 +85,29 @@ function next(): void {
 const canPrev = computed((): boolean => currentIndex.value > 0)
 const canNext = computed((): boolean => currentIndex.value < computedMaxIndex.value)
 
+// Сброс состояния перетаскивания без перелистывания
+function resetDrag(): void {
+  isDragging.value = false
+  dragOffset.value = 0
+  dragAxis.value = null
+}
+
+function handleDragEnd(): void {
+  const offset = dragOffset.value
+  const wasHorizontal = dragAxis.value !== 'y'
+  resetDrag()
+  if (!wasHorizontal) return
+  if (offset < -SWIPE_THRESHOLD) next()
+  else if (offset > SWIPE_THRESHOLD) prev()
+}
+
+// Mouse
+
 function onMouseDown(e: MouseEvent): void {
   isDragging.value = true
   dragStartX.value = e.clientX
   dragOffset.value = 0
+  dragAxis.value = 'x'
 }
 
 function onMouseMove(e: MouseEvent): void {
@@ -96,20 +120,40 @@ function onMouseUp(): void {
   handleDragEnd()
 }
 
+// Touch
+
 function onTouchStart(e: TouchEvent): void {
   const touch = e.touches[0]
   if (!touch) return
   isDragging.value = true
   dragStartX.value = touch.clientX
+  dragStartY.value = touch.clientY
   dragOffset.value = 0
+  dragAxis.value = null
 }
 
 function onTouchMove(e: TouchEvent): void {
   if (!isDragging.value) return
   const touch = e.touches[0]
   if (!touch) return
-  if (e.cancelable) e.preventDefault()
-  dragOffset.value = touch.clientX - dragStartX.value
+
+  const dx = touch.clientX - dragStartX.value
+  const dy = touch.clientY - dragStartY.value
+
+  // Определяем направление жеста по первым движениям
+  if (dragAxis.value === null) {
+    if (Math.abs(dx) < AXIS_LOCK_DISTANCE && Math.abs(dy) < AXIS_LOCK_DISTANCE) return
+    dragAxis.value = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y'
+  }
+
+  // Вертикальный жест: это скролл страницы, слайдер не трогаем
+  if (dragAxis.value === 'y') {
+    resetDrag()
+    dragAxis.value = 'y'
+    return
+  }
+
+  dragOffset.value = dx
 }
 
 function onTouchEnd(): void {
@@ -117,13 +161,9 @@ function onTouchEnd(): void {
   handleDragEnd()
 }
 
-function handleDragEnd(): void {
-  const threshold = 80
-  const offset = dragOffset.value
-  isDragging.value = false
-  dragOffset.value = 0
-  if (offset < -threshold) next()
-  else if (offset > threshold) prev()
+// Браузер перехватил жест (скролл, системный жест и т.п.)
+function onTouchCancel(): void {
+  resetDrag()
 }
 
 onMounted((): void => {
@@ -144,54 +184,55 @@ watch(computedMaxIndex, (max: number): void => {
 
 <template v-if="items.length > 0">
   <section
-    class="relative w-full overflow-hidden select-none border border-gray-150"
-    :aria-label="ariaLabel"
-    aria-roledescription="карусель"
+      class="relative w-full overflow-hidden select-none border border-gray-150"
+      :aria-label="ariaLabel"
+      aria-roledescription="карусель"
   >
     <button
-      class="absolute z-10 h-full px-2 2xl:px-5.5 bg-linear-to-r from-gray-500/0 to-gray-500/0 text-gray-300 transition-all duration-200"
-      :class="canPrev ? 'opacity-100 hover:from-gray-500/10 hover:text-gray-500 cursor-pointer' : 'opacity-20'"
-      :disabled="!canPrev"
-      aria-label="Предыдущий"
-      @click="prev"
+        class="absolute z-10 h-full px-2 2xl:px-5.5 bg-linear-to-r from-gray-500/0 to-gray-500/0 text-gray-300 transition-all duration-200"
+        :class="canPrev ? 'opacity-100 hover:from-gray-500/10 hover:text-gray-500 cursor-pointer' : 'opacity-20'"
+        :disabled="!canPrev"
+        aria-label="Предыдущий"
+        @click="prev"
     >
       <Icon name="heroicons:chevron-left-solid" class="text-[1.25rem]" aria-hidden="true" />
     </button>
 
     <button
-      class="absolute right-0 z-10 h-full px-2 2xl:px-5.5 bg-linear-to-l from-gray-500/0 to-gray-500/0 text-gray-300 transition-all duration-200"
-      :class="canNext ? 'opacity-100 hover:from-gray-500/10 hover:text-gray-600 cursor-pointer' : 'opacity-20'"
-      :disabled="!canNext"
-      aria-label="Следующий"
-      @click="next"
+        class="absolute right-0 z-10 h-full px-2 2xl:px-5.5 bg-linear-to-l from-gray-500/0 to-gray-500/0 text-gray-300 transition-all duration-200"
+        :class="canNext ? 'opacity-100 hover:from-gray-500/10 hover:text-gray-600 cursor-pointer' : 'opacity-20'"
+        :disabled="!canNext"
+        aria-label="Следующий"
+        @click="next"
     >
       <Icon name="heroicons:chevron-right-solid" class="text-[1.25rem]" aria-hidden="true" />
     </button>
 
     <div
-      class="flex divide-x divide-gray-150 touch-action-none"
-      aria-live="polite"
-      :style="{
+        class="flex divide-x divide-gray-150 touch-pan-y"
+        aria-live="polite"
+        :style="{
         transform: computedTranslateX,
         transition: isDragging ? 'none' : 'transform 0.4s ease',
         cursor: isDragging ? 'grabbing' : 'grab'
       }"
-      @mousedown="onMouseDown"
-      @touchstart="onTouchStart"
-      @touchmove="onTouchMove"
-      @touchend="onTouchEnd"
-      @dragstart.prevent
+        @mousedown="onMouseDown"
+        @touchstart.passive="onTouchStart"
+        @touchmove.passive="onTouchMove"
+        @touchend="onTouchEnd"
+        @touchcancel="onTouchCancel"
+        @dragstart.prevent
     >
       <article
-        v-for="(item, index) in items"
-        :key="index"
-        class="shrink-0 px-4"
-        :class="computedCardWidthClass"
-        role="group"
-        aria-roledescription="слайд"
-        :aria-label="`Слайд ${index + 1} из ${items.length}`"
-        :aria-hidden="!isSlideVisible(index)"
-        :inert="!isSlideVisible(index)"
+          v-for="(item, index) in items"
+          :key="index"
+          class="shrink-0 px-4"
+          :class="computedCardWidthClass"
+          role="group"
+          aria-roledescription="слайд"
+          :aria-label="`Слайд ${index + 1} из ${items.length}`"
+          :aria-hidden="!isSlideVisible(index)"
+          :inert="!isSlideVisible(index)"
       >
         <slot name="item" :item="item" />
       </article>

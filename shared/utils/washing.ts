@@ -2,21 +2,21 @@ export const WASHING_CLOSING_TIME = '16:00:00'
 
 export const WASHING_DURATION_MINUTES: Record<string, Record<string, number>> = {
     water: {
-        car: 30,
-        truck: 30,
-        'truck-trailer': 45,
-        bus: 30,
-        'special-machinery': 45
+        car: 60,
+        truck: 60,
+        'truck-trailer': 60,
+        bus: 60,
+        'special-machinery': 60
     },
     'active-foam': {
-        car: 30,
-        truck: 45,
+        car: 60,
+        truck: 60,
         'truck-trailer': 60,
-        bus: 45,
+        bus: 60,
         'special-machinery': 60
     },
     'dirt-blaster': {
-        truck: 90,
+        truck: 120,
         'truck-trailer': 120,
         'special-machinery': 120
     }
