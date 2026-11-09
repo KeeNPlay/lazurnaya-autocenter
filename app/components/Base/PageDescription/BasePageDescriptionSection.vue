@@ -9,9 +9,12 @@ interface Props {
   title: string
   description: string
   descriptionBadge: string
+  eager?:boolean
 }
 
-defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+  eager: false
+})
 
 </script>
 
@@ -24,6 +27,7 @@ defineProps<Props>()
             :image='`images/${image}.jpg`'
             :title="headerTitle"
             :description="headerDescription"
+            :eager="props.eager"
         />
         <section 
             class="flex flex-col pb-6 px-4 pt-10 lg:p-10 lg:pt-20 2xl:p-12.5 2xl:pt-30 gap-y-12.5 border border-gray-150"

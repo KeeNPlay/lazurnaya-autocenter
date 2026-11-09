@@ -59,7 +59,7 @@ watch(route, (): void => emit('close'))
           class="fixed inset-x-0 bottom-0 z-40 flex flex-col overflow-y-auto overscroll-contain bg-gray-100 will-change-transform"
           :style="menuStyle"
       >
-        <div class="flex flex-1 flex-col px-4 pt-6 pb-20">
+        <div class="flex flex-1 flex-col px-4 py-6">
           <AppHeaderLinks class="flex flex-col gap-y-4 text-white" />
 
           <BaseButton
