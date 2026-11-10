@@ -56,13 +56,13 @@ onUnmounted(() => {
     <div
         v-if="modelValue"
         data-lenis-prevent
-        class="fixed inset-0 z-100 flex items-start justify-center overflow-y-auto overscroll-contain lg:px-20 2xl:px-40.5 py-0 md:py-10 pb-[env(safe-area-inset-bottom)]"
+        class="fixed inset-x-0 top-0 h-lvh z-100 flex items-start justify-center overflow-y-auto overscroll-contain lg:px-20 2xl:px-40.5 py-0 md:py-10 pb-[env(safe-area-inset-bottom)]"
         role="dialog"
         aria-modal="true"
         :aria-label="title"
     >
-      <!-- Extends below the viewport so that it also covers the area under the iOS toolbar -->
-      <div class="fixed inset-x-0 top-0 -bottom-24 bg-black/50 cursor-pointer" @click="close" />
+      <!-- lvh: height with collapsed browser bars, so the dimming reaches under the iOS toolbar -->
+      <div class="fixed inset-x-0 top-0 h-lvh bg-black/50 cursor-pointer" @click="close" />
 
       <div class="relative my-auto">
         <BaseLoader v-if="loading" />
