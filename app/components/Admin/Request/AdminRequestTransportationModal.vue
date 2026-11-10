@@ -44,7 +44,7 @@ function onComplete(): void {
 
 <template>
   <BaseModal :model-value="modelValue" title="Детали заявки" @update:model-value="emit('update:modelValue', $event)">
-    <div v-if="request" class="flex w-full max-w-lg flex-col gap-y-5 rounded-md bg-gray-100 p-4 pt-12">
+    <div v-if="request" class="flex w-[100vw] md:w-lg flex-col gap-y-5 rounded-md bg-gray-100 p-4 pt-12">
       <div class="flex items-center justify-between">
         <h2 class="text-xl font-medium text-white">Заявка №{{ request.id }}</h2>
         <AdminRequestStatusBadge :status="request.status" />

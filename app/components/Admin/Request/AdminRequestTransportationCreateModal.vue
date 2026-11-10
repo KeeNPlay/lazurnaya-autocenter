@@ -82,7 +82,7 @@ function onCreate(): void {
   >
     <div
         :key="formKey"
-        class="flex max-h-[90vh] w-full max-w-2xl flex-col gap-y-5 overflow-y-auto rounded-md bg-gray-100 p-4"
+        class="flex max-h-[90vh] w-[100vw] md:w-full max-w-3xl flex-col gap-y-5 overflow-y-auto rounded-md bg-gray-100 p-4"
     >
       <h2 class="text-xl font-medium text-white">Новая заявка</h2>
 
