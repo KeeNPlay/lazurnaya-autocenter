@@ -23,7 +23,8 @@ export default defineNuxtConfig({
       },
       meta: [
         // #1a1a1a is the sRGB value of --color-gray-100 (oklch 21.8%)
-        { name: 'theme-color', content: '#1a1a1a' }
+        { name: 'theme-color', content: '#1a1a1a' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1, viewport-fit=cover' }
       ]
     }
   },
