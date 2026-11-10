@@ -58,7 +58,8 @@ onUnmounted((): void => {
 
 <template>
   <div>
-    <div class="fixed inset-x-0 top-0 z-40 flex items-center justify-between px-2 py-6.5 md:hidden">
+    <!-- Not inset-x-0: a full-width transparent bar blocks the buttons on the right side of the page -->
+    <div class="fixed left-0 top-0 z-40 flex items-center px-2 py-6.5 md:hidden">
       <BaseButton
           variant="secondary"
           aria-label="Открыть меню"
