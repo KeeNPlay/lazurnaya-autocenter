@@ -50,7 +50,7 @@ onUnmounted(() => {
       <div
           v-if="modelValue"
           data-lenis-prevent
-          class="fixed inset-0 z-100 overflow-y-auto overscroll-contain bg-black/50"
+          class="fixed inset-0 z-100 overflow-y-auto overscroll-contain bg-black/50 text-white"
           role="dialog"
           aria-modal="true"
           :aria-label="title"
