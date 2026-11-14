@@ -25,26 +25,36 @@ function toggle(key: keyof ConsentModel, checked: boolean, current: ConsentModel
     <div class="flex flex-col gap-y-5 lg:gap-y-6">
       <label class="flex items-center gap-x-3 cursor-pointer select-none">
         <span
-          class="relative mt-0.5 w-7 h-7 shrink-0 rounded border bg-gray-150 border-gray-200 flex items-center justify-center
+            class="relative mt-0.5 w-7 h-7 shrink-0 rounded border bg-gray-150 border-gray-200 flex items-center justify-center
                  transition-colors duration-200"
         >
           <input
-            type="checkbox"
-            required
-            class="peer sr-only"
-            :checked="modelValue.privacyPolicy"
-            @change="toggle('privacyPolicy', ($event.target as HTMLInputElement).checked, modelValue)"
+              type="checkbox"
+              required
+              class="peer sr-only"
+              :checked="modelValue.privacyPolicy"
+              @change="toggle('privacyPolicy', ($event.target as HTMLInputElement).checked, modelValue)"
           >
           <Icon
-            name="heroicons:check-16-solid"
-            class="w-5 h-5 text-orange-500 opacity-0 peer-checked:opacity-100 transition-opacity duration-200"
+              name="heroicons:check-16-solid"
+              class="w-5 h-5 text-orange-500 opacity-0 peer-checked:opacity-100 transition-opacity duration-200"
           />
         </span>
         <span class="text-gray-900 text-[0.625rem] lg:text-sm 2xl:text-lg leading-relaxed">
           Я предоставляю согласие на обработку персональных данных, а также подтверждаю ознакомление и согласие с
-          <NuxtLink to="#" class="text-orange-700 hover:text-orange-800 underline transition-colors duration-200">
+          <NuxtLink
+              to="/privacy"
+              target="_blank"
+              rel="noopener"
+              class="text-orange-700 hover:text-orange-800 underline transition-colors duration-200"
+          >
             Политикой конфиденциальности</NuxtLink>,
-          <NuxtLink to="#" class="text-orange-700 hover:text-orange-800 underline transition-colors duration-200">
+          <NuxtLink
+              to="/terms"
+              target="_blank"
+              rel="noopener"
+              class="text-orange-700 hover:text-orange-800 underline transition-colors duration-200"
+          >
             Пользовательским соглашением</NuxtLink>
           <span class="text-orange-500">*</span>
         </span>
