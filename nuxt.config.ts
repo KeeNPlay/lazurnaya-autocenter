@@ -1,6 +1,10 @@
 import tailwindcss from "@tailwindcss/vite";
 import { resolveAlias } from "nuxt/kit";
 
+// Render sets RENDER=true during build and runtime.
+// The test deployment must stay out of search results.
+const isRenderTest = Boolean(process.env.RENDER)
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
@@ -12,6 +16,8 @@ export default defineNuxtConfig({
     '@nuxtjs/turnstile',
     'nuxt-auth-utils',
     'nuxt-security',
+    '@nuxtjs/robots',
+    '@nuxtjs/sitemap',
   ],
 
   app: {
@@ -26,6 +32,24 @@ export default defineNuxtConfig({
         { name: 'theme-color', content: '#1a1a1a' },
       ]
     }
+  },
+
+  site: {
+    url: isRenderTest
+        ? (process.env.RENDER_EXTERNAL_URL || 'https://lazurnaya-autocenter.onrender.com')
+        : 'https://acl.com.by',
+    name: 'Автоцентр на Лазурной',
+    // false on Render: robots.txt gets "Disallow: /", pages get noindex
+    indexable: !isRenderTest,
+  },
+
+  robots: {
+    disallow: ['/admin', '/api'],
+  },
+
+  sitemap: {
+    // Public pages are collected from app/pages automatically
+    exclude: ['/admin', '/admin/**'],
   },
 
   css: [
@@ -127,6 +151,10 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
+    // Admin pages: noindex header + meta tag even if somebody links to them
+    '/admin/**': {
+      robots: false,
+    },
     '/api/forms/**': {
       security: {
         rateLimiter: false,
