@@ -11,6 +11,7 @@ import { faqItems } from '~/constants/faq'
     <HeroSection />
     <StatsSection />
     <CardSection
+
         aria-label="Секция услуг"
         image="services"
         title="Наши услуги"
@@ -26,6 +27,6 @@ import { faqItems } from '~/constants/faq'
         :cards="advantages"
         cardOrientation="horizontal"
     />
-    <ReviewSection :review="reviews" />
-    <FaqSection :items="faqItems" />
+    <ReviewSection v-reveal :review="reviews" />
+    <FaqSection v-reveal :items="faqItems" />
 </template>

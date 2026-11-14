@@ -16,37 +16,45 @@ const props = withDefaults(defineProps<Props>(), {
   eager: false
 })
 
+// A 2-column grid from the 'md' breakpoint: even-numbered cards on the left, odd-numbered on the right.
+// A single-column layout on mobile remains unaffected: the 100ms delay is imperceptible there.
+function revealDelay(index: number): number {
+  return (index % 2) * 100
+}
+
 </script>
 
 <template>
-    <section 
-        class="flex flex-col mx-4 lg:mx-0" 
-        aria-label="Секция гостехосмотра"
+  <section
+      class="flex flex-col mx-4 lg:mx-0"
+      aria-label="Секция гостехосмотра"
+  >
+    <BaseSectionHeader
+        :image='`images/${image}.jpg`'
+        :title="headerTitle"
+        :description="headerDescription"
+        :eager="props.eager"
+    />
+    <section
+        v-reveal
+        class="flex flex-col pb-6 px-4 pt-10 lg:p-10 lg:pt-20 2xl:p-12.5 2xl:pt-30 gap-y-12.5 border border-gray-150"
+        aria-label="Секция описания гостехосмотра"
     >
-        <BaseSectionHeader 
-            :image='`images/${image}.jpg`'
-            :title="headerTitle"
-            :description="headerDescription"
-            :eager="props.eager"
-        />
-        <section 
-            class="flex flex-col pb-6 px-4 pt-10 lg:p-10 lg:pt-20 2xl:p-12.5 2xl:pt-30 gap-y-12.5 border border-gray-150"
-            aria-label="Секция описания гостехосмотра"
-        >
-            <div class="flex flex-col gap-y-3.5">
-                <h3 class="text-2xl lg:text-4xl 2xl:text-5xl font-semibold">{{ title }}</h3>
-                <p class="text-sm lg:text-base 2xl:text-lg text-gray-900">{{ description }}</p>
-            </div>
-            <BaseArticle as="mark" class="text-sm sm:text-base lg:text-lg 2xl:text-xl w-fit">{{ descriptionBadge }}</BaseArticle>
-        </section>
-        <section aria-label="Секция порядка прохождения гостехосмотра">
-            <div class="grid border-t border-l border-gray-150 grid-cols-1 md:grid-cols-2">
-                <BasePageDescriptionCard
-                    v-for="(item, index) in items"
-                    :key="index"
-                    v-bind="item"
-                />
-            </div>
-        </section>
+      <div class="flex flex-col gap-y-3.5">
+        <h3 class="text-2xl lg:text-4xl 2xl:text-5xl font-semibold">{{ title }}</h3>
+        <p class="text-sm lg:text-base 2xl:text-lg text-gray-900">{{ description }}</p>
+      </div>
+      <BaseArticle as="mark" class="text-sm sm:text-base lg:text-lg 2xl:text-xl w-fit">{{ descriptionBadge }}</BaseArticle>
     </section>
+    <section aria-label="Секция порядка прохождения гостехосмотра">
+      <div class="grid border-t border-l border-gray-150 grid-cols-1 md:grid-cols-2">
+        <BasePageDescriptionCard
+            v-for="(item, index) in items"
+            :key="index"
+            v-reveal="revealDelay(index)"
+            v-bind="item"
+        />
+      </div>
+    </section>
+  </section>
 </template>

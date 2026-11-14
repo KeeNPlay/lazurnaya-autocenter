@@ -67,7 +67,7 @@ onUnmounted(() => {
             <BaseButton
                 variant="transparent"
                 type="button"
-                class="absolute top-4 right-4 transition-colors cursor-pointer"
+                class="absolute top-4 right-8 lg:right-4 transition-colors cursor-pointer"
                 aria-label="Закрыть окно"
                 @click="close"
             >
