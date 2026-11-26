@@ -131,11 +131,19 @@ onUnmounted((): void => {
       </NuxtLink>
       <NuxtLink
           to="/admin/blacklist"
-          class="aside-link"
+          class="aside-link mb-4"
           active-class="aside-link-active"
       >
         <Icon class="mt-0.5 text-orange-500" name="heroicons:no-symbol-20-solid" />
         Черный список
+      </NuxtLink>
+      <NuxtLink
+          to="/board"
+          target="_blank"
+          class="aside-link"
+      >
+        <Icon class="mt-0.5 text-orange-500" name="heroicons:tv-20-solid" />
+        Табло очереди
       </NuxtLink>
 
       <BaseButton class="mt-auto" @click="onLogout">

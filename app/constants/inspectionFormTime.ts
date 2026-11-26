@@ -21,6 +21,7 @@ export const INSPECTION_TIME_SLOTS: TimeOption[] = [
     { label: '12:00', value: '12:00:00' },
     { label: '12:15', value: '12:15:00' },
     { label: '12:30', value: '12:30:00' },
+    { label: '12:45', value: '12:45:00' },
     { label: '13:30', value: '13:30:00' },
     { label: '13:45', value: '13:45:00' },
     { label: '14:00', value: '14:00:00' },
