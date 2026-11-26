@@ -81,7 +81,7 @@ const controlButtonClass =
     <header class="flex h-[12vh] shrink-0 items-center justify-between bg-blue-600 px-[3vw] text-white">
       <div class="flex items-center gap-x-[2vw]">
         <AppLogo variant="white" size="lg" />
-        <h1 class=" text-[3vw] font-bold tracking-wide whitespace-nowrap">ОЧЕРЕДЬ НА ТЕХОСМОТР</h1>
+        <h1 class=" text-[3vw] font-bold tracking-wide whitespace-nowrap">ОЧЕРЕДЬ НА ГОСТЕХОСМОТР</h1>
       </div>
 
       <div class="flex items-center gap-x-[2.5vw]">

@@ -43,14 +43,8 @@ export default defineNuxtConfig({
     indexable: !isRenderTest,
   },
 
-  robots: {
-    disallow: ['/admin', '/api'],
-  },
-
-  sitemap: {
-    // Public pages are collected from app/pages automatically
-    exclude: ['/admin', '/admin/**'],
-  },
+  robots: { disallow: ['/admin', '/api', '/board'] },
+  sitemap: { exclude: ['/admin', '/admin/**', '/board'] },
 
   css: [
     './assets/css/main.css',
@@ -153,6 +147,9 @@ export default defineNuxtConfig({
   routeRules: {
     // Admin pages: noindex header + meta tag even if somebody links to them
     '/admin/**': {
+      robots: false,
+    },
+    '/board': {
       robots: false,
     },
     '/api/forms/**': {
